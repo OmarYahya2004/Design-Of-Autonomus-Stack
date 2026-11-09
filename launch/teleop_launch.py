@@ -7,7 +7,7 @@ def generate_launch_description():
     # Launch your custom UI Teleop node
     ui_node = Node(
         package='csen934_project_pkg',
-        executable='ui_teleop',
+        executable='control',
         name='control_teleop_node',
         output='screen'
     )
