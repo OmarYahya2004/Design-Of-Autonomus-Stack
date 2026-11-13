@@ -17,16 +17,15 @@ Default standard deviations (spec):
 import copy
 import math
 
-import numpy as np
-import rclpy
-from nav_msgs.msg import Odometry
-from rclpy.node import Node
-
 from csen934_project_pkg.helping_functions import (
     euler_to_quaternion,
     normalize_angle,
     quaternion_to_euler,
 )
+from nav_msgs.msg import Odometry
+import numpy as np
+import rclpy
+from rclpy.node import Node
 
 # Indices into the row-major 6x6 covariance arrays [x, y, z, rot_x, rot_y, rot_z].
 IDX_X = 0 * 6 + 0

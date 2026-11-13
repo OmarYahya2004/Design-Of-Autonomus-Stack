@@ -31,7 +31,9 @@ setup(
             #'ui_teleop = csen934_project_pkg.ui_teleop_node:main',
             'control = csen934_project_pkg.control:main',
             'localization_add_noise = csen934_project_pkg.localization_add_noise:main',
-            'localization_ekf_node = csen934_project_pkg.localization_ekf_node:main'
+            'localization_ekf_node = csen934_project_pkg.localization_ekf_node:main',
+            'yaw_plot_publisher = csen934_project_pkg.yaw_plot_publisher:main',
+            'localization_plots = csen934_project_pkg.localization_plots:main'
         ],
     },
 )

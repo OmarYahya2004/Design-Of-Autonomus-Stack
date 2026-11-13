@@ -1,4 +1,10 @@
-"""Shared math helpers for the localization nodes (noise + EKF)."""
+"""
+Shared math helpers for the localization nodes (noise + EKF).
+
+euler_to_quaternion mirrors the provided
+Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Helping_Functions.py,
+which is a Webots controller file and is not importable from the ROS package.
+"""
 import math
 
 
