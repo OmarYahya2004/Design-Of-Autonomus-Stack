@@ -1,2 +1,10 @@
 __pycache__/
 *.pyc
+/build
+/install
+/log
+/.idea
+
+# Local environment / launcher
+.venv/
+run_sim.sh

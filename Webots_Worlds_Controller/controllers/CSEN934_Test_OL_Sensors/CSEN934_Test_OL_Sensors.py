@@ -1,3 +1,5 @@
+import math
+
 import rclpy
 from ackermann_msgs.msg import AckermannDrive
 from nav_msgs.msg import Odometry
@@ -66,10 +68,14 @@ while driver.step() != -1:
         odom_msg.pose.pose.orientation.w = qw
         
         # Linear Velocity
-        linear_vel = gps.getSpeedVector()
-        odom_msg.twist.twist.linear.x = linear_vel[0]
-        odom_msg.twist.twist.linear.y = linear_vel[1]
-        odom_msg.twist.twist.linear.z = linear_vel[2]
+        # GPS gives velocity in the world frame; Odometry twist must be in the
+        # child frame (base_link), so rotate it by -yaw. linear.x is then the
+        # signed forward speed (negative when reversing).
+        vx_w, vy_w, vz_w = gps.getSpeedVector()
+        cos_yaw, sin_yaw = math.cos(yaw), math.sin(yaw)
+        odom_msg.twist.twist.linear.x = cos_yaw * vx_w + sin_yaw * vy_w
+        odom_msg.twist.twist.linear.y = -sin_yaw * vx_w + cos_yaw * vy_w
+        odom_msg.twist.twist.linear.z = vz_w
         
         # Angular Velocity
         angular_vel = gyro.getValues()
