@@ -13,12 +13,12 @@ def generate_launch_description():
     )
     
     # Launch the Noise Addition node
-    #noise_node = Node(
-    #    package='csen934_project_pkg',
-    #    executable='localization_add_noise',
-    #    name='localization_add_noise',
-    #    output='screen'
-    #)
+    noise_node = Node(
+        package='csen934_project_pkg',
+        executable='localization_add_noise',
+        name='Localization_Add_Noise_Node',
+        output='screen'
+    )
     
     # Launch the EKF node
     #ekf_node = Node(
@@ -36,7 +36,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         ui_node,
-        #noise_node,
+        noise_node,
         #ekf_node,
         rqt_graph_node
     ])
