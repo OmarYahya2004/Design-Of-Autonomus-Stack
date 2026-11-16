@@ -8,3 +8,5 @@ __pycache__/
 # Local environment / launcher
 .venv/
 run_sim.sh
+frames_*.gv
+frames_*.pdf
