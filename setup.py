@@ -14,6 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'Webots_Worlds_Controller/Worlds'), glob('Webots_Worlds_Controller/Worlds/*.wbt')),
+        (os.path.join('share', package_name, 'config'), glob('csen934_project_pkg/config/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

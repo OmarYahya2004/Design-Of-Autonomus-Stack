@@ -1,0 +1,16 @@
+slam_toolbox:
+  ros__parameters:
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan
+    mode: mapping
+    resolution: 0.1
+    max_laser_range: 40.0
+    minimum_travel_distance: 0.05
+    minimum_travel_heading: 0.05
+    do_loop_closing: true
+    transform_timeout: 0.5        # <-- Add this
+    tf_buffer_duration: 30.0      # <-- Add this
+    minimum_time_interval: 0.2    # <-- Add this
+    use_sim_time: false           # <-- Force system time to bypass Webots clock drift

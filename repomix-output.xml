@@ -1,0 +1,3355 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+csen934_project_pkg/
+  config/
+    slam_layout.rviz
+    slam_toolbox.yaml
+  __init__.py
+  control.py
+  helping_functions.py
+  localization_add_noise.py
+  localization_ekf_node.py
+  localization_plots.py
+  rqt_plot_retry.py
+  yaw_plot_publisher.py
+launch/
+  teleop_launch.py
+resource/
+  csen934_project_pkg
+test/
+  test_copyright.py
+  test_flake8.py
+  test_pep257.py
+Webots_Worlds_Controller/
+  controllers/
+    CSEN934_Test_OL_Sensors/
+      CSEN934_Test_OL_Sensors.py
+      Define_Sensors.py
+      Helping_Functions.py
+  Worlds/
+    .city.jpg
+    .city.wbproj
+    city.wbt
+.gitignore
+frames_2026-11-14_00.08.43.gv
+frames_2026-11-14_00.08.43.pdf
+frames_2026-11-14_00.10.23.gv
+frames_2026-11-14_00.10.23.pdf
+frames_2026-11-14_00.11.37.gv
+frames_2026-11-14_00.11.37.pdf
+package.xml
+README.md
+setup.cfg
+setup.py
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="csen934_project_pkg/config/slam_layout.rviz">
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 70
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.5
+    Tree Height: 208
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: false
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map (SLAM Output)
+      Topic:
+        Depth: 5
+        Durability Policy: Transient Local
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.10000000149011612
+      Style: Points
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+        Value: /scan
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 500
+      Name: Ground Truth Trajectory
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /Car_Odom_GT
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 500
+      Name: Filtered Trajectory (EKF)
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /Car_Odom_Filtered
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /front_camera/image_raw
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Angle: 0
+      Class: rviz_default_plugins/TopDownOrtho
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Scale: 10
+      Target Frame: base_link
+      Value: TopDownOrtho (rviz_default_plugins)
+      X: -7.62939453125e-06
+      Y: -3.814697265625e-06
+    Saved:
+      - Angle: 0
+        Class: rviz_default_plugins/TopDownOrtho
+        Enable Stereo Rendering:
+          Stereo Eye Separation: 0.05999999865889549
+          Stereo Focal Distance: 1
+          Swap Stereo Eyes: false
+          Value: false
+        Invert Z Axis: false
+        Name: TopDownOrtho
+        Near Clip Distance: 0.009999999776482582
+        Scale: 10
+        Target Frame: base_link
+        Value: TopDownOrtho (rviz_default_plugins)
+        X: -7.62939453125e-06
+        Y: -3.814697265625e-06
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 800
+  Hide Left Dock: false
+  Hide Right Dock: false
+  Image:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000001cb000002c6fc0200000003fb0000000a0049006d006100670065010000003d000000c30000002800fffffffb000000100044006900730070006c006100790073010000010600000153000000c900fffffffb0000000a00560069006500770073010000025f000000a4000000a400ffffff00000391000002c600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Views:
+    collapsed: false
+  Width: 1378
+  X: 128
+  Y: 141
+</file>
+
+<file path="csen934_project_pkg/config/slam_toolbox.yaml">
+slam_toolbox:
+  ros__parameters:
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link
+    scan_topic: /scan
+    mode: mapping
+    resolution: 0.1
+    max_laser_range: 40.0
+    minimum_travel_distance: 0.3
+    minimum_travel_heading: 0.2
+    do_loop_closing: true
+    transform_timeout: 0.5        # <-- Add this
+    tf_buffer_duration: 30.0      # <-- Add this
+    minimum_time_interval: 0.2    # <-- Add this
+    use_sim_time: false           # <-- Force system time to bypass Webots clock drift
+</file>
+
+<file path="frames_2026-11-14_00.08.43.gv">
+digraph G { "No tf data received" }
+</file>
+
+<file path="frames_2026-11-14_00.10.23.gv">
+digraph G {
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.658\nBuffer length: 5.018\nMost recent transform: 1794607823.617298\nOldest transform: 1794607818.598852\n"];
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.446\nBuffer length: 4.975\nMost recent transform: 1794607824.015565\nOldest transform: 1794607819.040129\n"];
+"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1794607823.6227958"[ shape=plaintext ] ;
+}->"map";
+}
+</file>
+
+<file path="frames_2026-11-14_00.11.37.gv">
+digraph G {
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.676\nBuffer length: 5.028\nMost recent transform: 1794607897.704478\nOldest transform: 1794607892.676187\n"];
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.503\nBuffer length: 4.314\nMost recent transform: 1794607898.140439\nOldest transform: 1794607893.826056\n"];
+"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1794607897.7100258"[ shape=plaintext ] ;
+}->"map";
+}
+</file>
+
+<file path="csen934_project_pkg/__init__.py">
+
+</file>
+
+<file path="csen934_project_pkg/control.py">
+import rclpy
+from rclpy.node import Node
+from ackermann_msgs.msg import AckermannDrive
+import customtkinter as ctk
+import tkinter as tk
+import threading
+import math
+
+class TeleopUI(Node):
+    def __init__(self):
+        super().__init__('control_teleop_node')
+        self.publisher_ = self.create_publisher(AckermannDrive, '/Car_Ackrm', 10)
+        self.current_speed = 0.0
+        self.current_steering = 0.0
+
+    def publish_cmd(self):
+        msg = AckermannDrive()
+        msg.speed = self.current_speed
+        msg.steering_angle = self.current_steering
+        self.publisher_.publish(msg)
+
+# --- Custom 3-Spoke Steering Wheel Widget ---
+class SteeringWheel(tk.Canvas):
+    def __init__(self, parent, size=180, command=None, **kwargs):
+        super().__init__(parent, width=size, height=size, bg="#2b2b2b", highlightthickness=0, **kwargs)
+        self.size = size
+        self.command = command
+        self.center = size / 2
+        self.radius = (size / 2) - 15
+        self.angle = 0.0  # 0 radians is centered
+
+        self.bind("<B1-Motion>", self.drag)
+        self.bind("<Button-1>", self.drag)
+        self.bind("<ButtonRelease-1>", self.release)
+
+        self.draw_wheel()
+
+    def draw_wheel(self):
+        self.delete("all")
+        
+        # 1. Draw the thick outer rim
+        self.create_oval(self.center - self.radius, self.center - self.radius,
+                         self.center + self.radius, self.center + self.radius,
+                         outline="#888888", width=12)
+        self.create_oval(self.center - self.radius, self.center - self.radius,
+                         self.center + self.radius, self.center + self.radius,
+                         outline="#dddddd", width=2)
+
+        # 2. Calculate spoke angles (Left, Right, and Bottom spokes)
+        # FIXED: self.angle is now positive so the drawing tracks the mouse perfectly
+        left_spoke_angle = self.angle - (math.pi / 2)
+        right_spoke_angle = self.angle + (math.pi / 2)
+        bottom_spoke_angle = self.angle + math.pi
+
+        # Helper function to get X, Y coordinates for the end of a spoke
+        def get_coords(angle, length):
+            x = self.center + (length * math.sin(angle))
+            y = self.center - (length * math.cos(angle))
+            return x, y
+
+        # 3. Draw the three spokes
+        inner_r = 15
+        outer_r = self.radius - 5
+        
+        for angle in [left_spoke_angle, right_spoke_angle, bottom_spoke_angle]:
+            start_x, start_y = get_coords(angle, inner_r)
+            end_x, end_y = get_coords(angle, outer_r)
+            self.create_polygon(
+                self.center + (inner_r * math.sin(angle - 0.5)), self.center - (inner_r * math.cos(angle - 0.5)),
+                self.center + (inner_r * math.sin(angle + 0.5)), self.center - (inner_r * math.cos(angle + 0.5)),
+                end_x, end_y,
+                fill="#555555", outline="black"
+            )
+
+        # 4. Draw the center horn/hub
+        self.create_oval(self.center - 25, self.center - 25,
+                         self.center + 25, self.center + 25,
+                         fill="#333333", outline="#111111", width=2)
+        
+        # 5. Draw a small top-center marker (like racing steering wheels)
+        # FIXED: Removed the negative inversion so the marker follows the cursor
+        marker_x, marker_y = get_coords(self.angle, self.radius)
+        self.create_oval(marker_x - 4, marker_y - 4, marker_x + 4, marker_y + 4, fill="red", outline="red")
+
+    def drag(self, event):
+        # Calculate angle based on standard Cartesian math
+        dx = event.x - self.center
+        dy = self.center - event.y 
+        
+        raw_angle = math.atan2(dx, dy)
+
+        # Clamp the visual steering angle to exactly [-0.5, 0.5] radians
+        self.angle = max(-0.5, min(0.5, raw_angle))
+        self.draw_wheel()
+
+        if self.command:
+            self.command(self.angle)
+
+    def release(self, event):
+        self.angle = 0.0
+        self.draw_wheel()
+        if self.command:
+            self.command(self.angle)
+# ------------------------------------
+
+def run_ros(node):
+    rclpy.spin(node)
+
+def build_ui(ros_node):
+    app = ctk.CTk()
+    app.title("Tesla Teleop Controller")
+    app.geometry("400x500") 
+    
+    speed_label = ctk.CTkLabel(app, text=f"Target Speed: {ros_node.current_speed} m/s", font=("Arial", 16, "bold"))
+    speed_label.pack(pady=(15, 10))
+    
+    def update_speed_display():
+        speed_label.configure(text=f"Target Speed: {ros_node.current_speed} m/s")
+    
+    def increase_speed():
+        ros_node.current_speed += 1.0  
+        ros_node.publish_cmd()
+        update_speed_display()
+
+    def decrease_speed():
+        ros_node.current_speed -= 1.0  
+        ros_node.publish_cmd()
+        update_speed_display()
+
+    def apply_brakes():
+        ros_node.current_speed = 0.0
+        ros_node.publish_cmd()
+        update_speed_display()
+
+    def update_steering(value):
+        # Webots/ROS standard: positive Ackermann steering is LEFT, negative is RIGHT.
+        # Since dragging right yields a positive value in our UI math, we invert it here
+        # so the physical vehicle turns in the same direction you dragged.
+        ros_node.current_steering = float(value)
+        ros_node.publish_cmd()
+
+    # UI Layout
+    ctk.CTkButton(app, text="Accelerate", command=increase_speed).pack(pady=5)
+    ctk.CTkButton(app, text="Decelerate", command=decrease_speed).pack(pady=5)
+    ctk.CTkButton(app, text="Brake", command=apply_brakes, fg_color="red").pack(pady=5)
+    
+    ctk.CTkLabel(app, text="Steering Wheel (Click and Drag)").pack(pady=(15, 5))
+    
+    wheel = SteeringWheel(app, size=180, command=update_steering)
+    wheel.pack(pady=5)
+
+    app.protocol("WM_DELETE_WINDOW", lambda: (ros_node.destroy_node(), rclpy.shutdown(), app.destroy()))
+    app.mainloop()
+
+def main():
+    rclpy.init()
+    teleop_node = TeleopUI()
+    
+    ros_thread = threading.Thread(target=run_ros, args=(teleop_node,), daemon=True)
+    ros_thread.start()
+    
+    build_ui(teleop_node)
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="csen934_project_pkg/localization_ekf_node.py">
+"""
+Extended Kalman Filter (EKF) Localization.
+
+Fuses the noisy odometry with the Ackermann control input to estimate the
+vehicle pose and speed.
+
+    Node:       Localization_EKF_Node
+    Subscribes: /Car_Odom_Noisy     (nav_msgs/msg/Odometry)          measurement
+                /Car_Ackrm          (ackermann_msgs/msg/AckermannDrive) control input
+    Publishes:  /Car_Odom_Filtered  (nav_msgs/msg/Odometry)
+
+State:   s = [x, y, yaw, v]   (v = signed forward speed of the rear axle)
+Control: u = [v_cmd, delta]   (commanded speed, front steering angle)
+
+Motion model (kinematic bicycle, reference point = rear-axle center, which is
+where the Webots Car origin and the GPS are):
+    x'   = x + v cos(yaw) dt
+    y'   = y + v sin(yaw) dt
+    yaw' = yaw + v tan(delta) / L dt
+    v'   = v + (v_cmd - v) / tau dt     (first-order lag toward the command)
+
+Measurement model (from /Car_Odom_Noisy):
+    z = [x, y, yaw, v, omega],  omega = v tan(delta) / L
+R is read from the measurement's covariance fields.
+"""
+import math
+
+from ackermann_msgs.msg import AckermannDrive
+from csen934_project_pkg.helping_functions import (
+    euler_to_quaternion,
+    normalize_angle,
+    quaternion_to_euler,
+)
+from nav_msgs.msg import Odometry
+import numpy as np
+import rclpy
+from rclpy.node import Node
+
+# Indices into the row-major 6x6 covariance arrays [x, y, z, rot_x, rot_y, rot_z].
+IDX_X = 0 * 6 + 0
+IDX_Y = 1 * 6 + 1
+IDX_YAW = 5 * 6 + 5
+IDX_XY = 0 * 6 + 1
+IDX_YX = 1 * 6 + 0
+IDX_XYAW = 0 * 6 + 5
+IDX_YAWX = 5 * 6 + 0
+IDX_YYAW = 1 * 6 + 5
+IDX_YAWY = 5 * 6 + 1
+
+# Used when a measurement reports zero variance (e.g. fed straight from GT),
+# so R stays invertible.
+MIN_VARIANCE = 1e-6
+
+# Gaps longer than this (s) mean the stream stopped; re-initialise from the
+# next measurement instead of predicting across the gap.
+MAX_DT = 1.0
+
+
+class LocalizationEKF(Node):
+
+    def __init__(self):
+        super().__init__('Localization_EKF_Node')
+
+        # Vehicle: TeslaModel3 PROTO (Webots R2025a) has wheelbase 2.94 m.
+        self.wheelbase = self.declare_parameter('wheelbase', 2.94).value
+        # Multiplies the incoming steering angle so that + = left in the model.
+        # /Car_Ackrm currently uses the Webots convention (+ = RIGHT turn, verified
+        # in city.wbt), the opposite of AckermannDrive, hence -1.0. Set to 1.0 if
+        # the controller and control.py are changed to the AckermannDrive convention.
+        self.steering_sign = self.declare_parameter('steering_sign', -1.0).value
+        # Time constant (s) of the speed response to a new speed command.
+        self.speed_tau = self.declare_parameter('speed_time_constant', 1.0).value
+
+        # Process noise (continuous-time std devs; scaled by dt).
+        self.q_pos = self.declare_parameter('process_std_position', 0.1).value
+        self.q_yaw = math.radians(
+            self.declare_parameter('process_std_yaw_deg', 1.0).value)
+        self.q_v = self.declare_parameter('process_std_speed', 1.0).value
+
+        self.s = None          # state [x, y, yaw, v]
+        self.P = None          # 4x4 covariance
+        self.last_stamp = None
+        self.v_cmd = None      # None until the first /Car_Ackrm arrives
+        self.delta = 0.0
+
+        self.create_subscription(
+            Odometry, '/Car_Odom_Noisy', self.measurement_callback, 10)
+        self.create_subscription(
+            AckermannDrive, '/Car_Ackrm', self.control_callback, 10)
+        self.pub = self.create_publisher(Odometry, '/Car_Odom_Filtered', 10)
+
+        self.get_logger().info(
+            'EKF ready: wheelbase=%.2f m, steering_sign=%+.0f, tau=%.2f s' % (
+                self.wheelbase, self.steering_sign, self.speed_tau))
+
+    # ------------------------------------------------------------------ input
+    def control_callback(self, msg: AckermannDrive):
+        self.v_cmd = float(msg.speed)
+        self.delta = self.steering_sign * float(msg.steering_angle)
+
+    def measurement_callback(self, msg: Odometry):
+        stamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+        z, R = self.measurement_from_msg(msg)
+
+        if self.s is None or self.last_stamp is None:
+            self.initialize(z, R)
+        else:
+            dt = stamp - self.last_stamp
+            if dt <= 0.0:
+                # Out-of-order or duplicate stamp: correct without predicting.
+                pass
+            elif dt > MAX_DT:
+                self.get_logger().warn(
+                    'Measurement gap of %.2f s, re-initialising EKF' % dt)
+                self.initialize(z, R)
+                self.last_stamp = stamp
+                self.publish(msg)
+                return
+            else:
+                self.predict(dt)
+            self.update(z, R)
+
+        self.last_stamp = stamp
+        self.publish(msg)
+
+    # ------------------------------------------------------------- EKF steps
+    def initialize(self, z, R):
+        self.s = z[:4].copy()
+        self.P = np.diag(np.diag(R)[:4])
+
+    def predict(self, dt):
+        x, y, yaw, v = self.s
+        L = self.wheelbase
+        tan_d = math.tan(self.delta)
+        c, s = math.cos(yaw), math.sin(yaw)
+
+        # Without a speed command, model speed as constant (random walk).
+        if self.v_cmd is None:
+            dv, dv_dv = 0.0, 0.0
+        else:
+            dv = (self.v_cmd - v) / self.speed_tau
+            dv_dv = -1.0 / self.speed_tau
+
+        self.s = np.array([
+            x + v * c * dt,
+            y + v * s * dt,
+            normalize_angle(yaw + v * tan_d / L * dt),
+            v + dv * dt,
+        ])
+
+        F = np.array([
+            [1.0, 0.0, -v * s * dt, c * dt],
+            [0.0, 1.0, v * c * dt, s * dt],
+            [0.0, 0.0, 1.0, tan_d / L * dt],
+            [0.0, 0.0, 0.0, 1.0 + dv_dv * dt],
+        ])
+        Q = np.diag([
+            self.q_pos ** 2, self.q_pos ** 2, self.q_yaw ** 2, self.q_v ** 2,
+        ]) * dt
+
+        self.P = F @ self.P @ F.T + Q
+
+    def update(self, z, R):
+        x, y, yaw, v = self.s
+        k_w = math.tan(self.delta) / self.wheelbase   # omega = v * k_w
+
+        h = np.array([x, y, yaw, v, v * k_w])
+        H = np.array([
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [0.0, 0.0, 0.0, k_w],
+        ])
+
+        innovation = z - h
+        innovation[2] = normalize_angle(innovation[2])
+
+        S = H @ self.P @ H.T + R
+        K = self.P @ H.T @ np.linalg.inv(S)
+
+        self.s = self.s + K @ innovation
+        self.s[2] = normalize_angle(self.s[2])
+
+        # Joseph form keeps P symmetric and positive definite.
+        I_KH = np.eye(4) - K @ H
+        self.P = I_KH @ self.P @ I_KH.T + K @ R @ K.T
+
+    # --------------------------------------------------------------- helpers
+    @staticmethod
+    def measurement_from_msg(msg: Odometry):
+        q = msg.pose.pose.orientation
+        _, _, yaw = quaternion_to_euler(q.x, q.y, q.z, q.w)
+        z = np.array([
+            msg.pose.pose.position.x,
+            msg.pose.pose.position.y,
+            yaw,
+            msg.twist.twist.linear.x,
+            msg.twist.twist.angular.z,
+        ])
+        pc, tc = msg.pose.covariance, msg.twist.covariance
+        R = np.diag([
+            max(pc[IDX_X], MIN_VARIANCE),
+            max(pc[IDX_Y], MIN_VARIANCE),
+            max(pc[IDX_YAW], MIN_VARIANCE),
+            max(tc[IDX_X], MIN_VARIANCE),
+            max(tc[IDX_YAW], MIN_VARIANCE),
+        ])
+        return z, R
+
+    def publish(self, meas: Odometry):
+        x, y, yaw, v = self.s
+        out = Odometry()
+        out.header = meas.header
+        out.child_frame_id = meas.child_frame_id
+
+        out.pose.pose.position.x = float(x)
+        out.pose.pose.position.y = float(y)
+        out.pose.pose.position.z = meas.pose.pose.position.z
+        qx, qy, qz, qw = euler_to_quaternion(0.0, 0.0, float(yaw))
+        out.pose.pose.orientation.x = qx
+        out.pose.pose.orientation.y = qy
+        out.pose.pose.orientation.z = qz
+        out.pose.pose.orientation.w = qw
+
+        out.twist.twist.linear.x = float(v)
+        out.twist.twist.angular.z = float(v * math.tan(self.delta) / self.wheelbase)
+
+        P = self.P
+        pose_cov = [0.0] * 36
+        pose_cov[IDX_X] = P[0, 0]
+        pose_cov[IDX_Y] = P[1, 1]
+        pose_cov[IDX_YAW] = P[2, 2]
+        pose_cov[IDX_XY] = pose_cov[IDX_YX] = P[0, 1]
+        pose_cov[IDX_XYAW] = pose_cov[IDX_YAWX] = P[0, 2]
+        pose_cov[IDX_YYAW] = pose_cov[IDX_YAWY] = P[1, 2]
+        out.pose.covariance = [float(c) for c in pose_cov]
+
+        twist_cov = [0.0] * 36
+        twist_cov[IDX_X] = P[3, 3]
+        k_w = math.tan(self.delta) / self.wheelbase
+        twist_cov[IDX_YAW] = k_w ** 2 * P[3, 3]
+        out.twist.covariance = [float(c) for c in twist_cov]
+
+        self.pub.publish(out)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = LocalizationEKF()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="csen934_project_pkg/localization_plots.py">
+"""
+Open three rqt_plot windows (x, y, yaw) comparing GT vs Noisy vs Filtered.
+
+rqt_plot silently drops any topic it cannot resolve when it starts and never
+retries, so launching it together with Webots gives empty plots. This waits
+until every plotted topic is being published, then starts one rqt_plot (with
+topic retry, see rqt_plot_retry.py) per quantity and stays alive until they
+are closed.
+"""
+import signal
+import subprocess
+import sys
+import time
+
+import rclpy
+
+SOURCES = ['Filtered', 'Noisy', 'GT']   # GT added last so it is drawn on top
+PLOTS = {
+    'x': ['/Car_Odom_%s/pose/pose/position/x' % s for s in SOURCES],
+    'y': ['/Car_Odom_%s/pose/pose/position/y' % s for s in SOURCES],
+    'yaw': ['/Car_Yaw_%s/data' % s for s in SOURCES],
+}
+REQUIRED_TOPICS = ['/Car_Odom_%s' % s for s in SOURCES] + ['/Car_Yaw_%s' % s for s in SOURCES]
+POLL_PERIOD = 0.5     # s
+REPORT_PERIOD = 10.0  # s
+
+
+def wait_for_topics(node):
+    last_report = time.monotonic()
+    while rclpy.ok():
+        published = {
+            name for name, _ in node.get_topic_names_and_types()
+            if node.count_publishers(name) > 0
+        }
+        missing = [t for t in REQUIRED_TOPICS if t not in published]
+        if not missing:
+            return True
+        if time.monotonic() - last_report > REPORT_PERIOD:
+            node.get_logger().info('Waiting for topics: %s' % ', '.join(missing))
+            last_report = time.monotonic()
+        rclpy.spin_once(node, timeout_sec=POLL_PERIOD)
+    return False
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = rclpy.create_node('Localization_Plots_Node')
+    node.get_logger().info('Waiting for odometry topics before opening rqt_plot...')
+    try:
+        ready = wait_for_topics(node)
+    except KeyboardInterrupt:
+        ready = False
+    if ready:
+        node.get_logger().info('Topics found, opening x / y / yaw plots')
+    node.destroy_node()
+    if rclpy.ok():
+        rclpy.shutdown()
+    if not ready:
+        return
+
+    # Ctrl+C (SIGINT) or launch shutdown (SIGTERM) -> close the plot windows too.
+    signal.signal(signal.SIGINT, signal.default_int_handler)
+    signal.signal(signal.SIGTERM, signal.default_int_handler)
+
+    # rqt_plot with topic retry (see rqt_plot_retry.py). Started directly rather
+    # than via `ros2 run`, which adds a wrapper process that would leave the real
+    # window orphaned when stopped.
+    plots = [
+        subprocess.Popen([sys.executable, '-m', 'csen934_project_pkg.rqt_plot_retry', *topics])
+        for topics in PLOTS.values()
+    ]
+    try:
+        while any(p.poll() is None for p in plots):
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        close_plots(plots)
+
+
+def close_plots(plots, grace=3.0):
+    # rqt_plot does not always exit on SIGINT, so escalate to SIGKILL.
+    for p in plots:
+        if p.poll() is None:
+            p.send_signal(signal.SIGINT)
+    deadline = time.monotonic() + grace
+    for p in plots:
+        try:
+            p.wait(timeout=max(0.0, deadline - time.monotonic()))
+        except subprocess.TimeoutExpired:
+            p.kill()
+            p.wait()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="csen934_project_pkg/rqt_plot_retry.py">
+"""
+Stock rqt_plot with two fixes for plotting the localization topics.
+
+1. Topic retry. Stock rqt_plot resolves the topics given on the command line
+   exactly once, right after its node starts. At that moment the node has
+   usually not finished discovering the existing topics (especially while
+   Webots is rendering), so the topics are silently dropped and nothing is
+   plotted. Here an unresolved topic is retried every second until it appears.
+
+2. Y auto-scale. Stock rqt_plot only ever extends the y-axis, starting from
+   [0, 1], so every plot keeps 0 in range (x is ~-45 m, yaw ~180 deg) and the
+   noise is squashed into tiny spikes. Here the y-axis fits the data currently
+   visible in the window, with a small margin.
+
+3. Time window. When a line is added, matplotlib re-fits the time axis to the
+   ~1 s of data received so far and autoscroll keeps that width. Here the
+   window is reset to 30 s after each line is added.
+
+Usage: python3 -m csen934_project_pkg.rqt_plot_retry /topic/field [...]
+"""
+import sys
+
+from python_qt_binding.QtCore import QTimer
+from rqt_plot import main as rqt_plot_main
+from rqt_plot import plot_widget
+from rqt_plot.data_plot import DataPlot
+
+RETRY_MS = 1000
+Y_MARGIN = 0.05        # fraction of the visible data range added above and below
+TIME_WINDOW_S = 30.0   # seconds of data visible while autoscrolling
+
+# --- 1. Topic retry --------------------------------------------------------
+_original_add_topic = plot_widget.PlotWidget.add_topic
+
+
+def _add_topic_with_retry(self, topic_name):
+    fields, _ = plot_widget.get_plot_fields(self._node, topic_name)
+    if not fields:
+        QTimer.singleShot(RETRY_MS, lambda: _add_topic_with_retry(self, topic_name))
+        return
+    _original_add_topic(self, topic_name)
+    # Adding a line makes matplotlib re-fit the time axis to the few samples
+    # received so far (~1 s), and autoscroll then keeps that width. Restore it.
+    if self.data_plot is not None:
+        self.data_plot.set_xlim([0.0, TIME_WINDOW_S])
+
+
+plot_widget.PlotWidget.add_topic = _add_topic_with_retry
+
+# --- 2. Y auto-scale to the visible data -----------------------------------
+_original_set_autoscale = DataPlot.set_autoscale
+_original_set_ylim = DataPlot.set_ylim
+
+
+def _set_autoscale_fit_visible(self, x=None, y=None):
+    if y:
+        y = y & ~DataPlot.SCALE_EXTEND   # fit visible data instead of only growing
+    _original_set_autoscale(self, x=x, y=y)
+
+
+def _set_ylim_with_margin(self, limits):
+    low, high = float(limits[0]), float(limits[1])
+    pad = (high - low) * Y_MARGIN
+    _original_set_ylim(self, [low - pad, high + pad])
+
+
+DataPlot.set_autoscale = _set_autoscale_fit_visible
+DataPlot.set_ylim = _set_ylim_with_margin
+
+
+def main():
+    # --empty: don't restore topics saved by a previously closed rqt_plot. All
+    # standalone rqt_plot windows share those saved settings, and because our
+    # topics are added by retry (not at startup) rqt_plot would otherwise add
+    # the last-closed window's topics as well, mixing x / y / yaw.
+    sys.argv = ['rqt_plot', '--empty', *sys.argv[1:]]
+    rqt_plot_main.main()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="csen934_project_pkg/yaw_plot_publisher.py">
+"""
+Yaw publisher for rqt_plot.
+
+rqt_plot cannot plot yaw from nav_msgs/Odometry directly (orientation is a
+quaternion), so this node republishes the yaw of each odometry topic as a
+std_msgs/Float64 in degrees.
+
+    Node:       Yaw_Plot_Node
+    Subscribes: /Car_Odom_GT, /Car_Odom_Noisy, /Car_Odom_Filtered  (nav_msgs/msg/Odometry)
+    Publishes:  /Car_Yaw_GT, /Car_Yaw_Noisy, /Car_Yaw_Filtered      (std_msgs/msg/Float64, deg)
+
+The yaw is unwrapped (continuous, not limited to +-180 deg) so the curves do not
+jump by 360 deg when the car faces ~180 deg. Noisy and Filtered are unwrapped
+onto the branch closest to the ground truth, so all three lines share the same
+offset and overlay in one plot.
+"""
+import math
+
+from csen934_project_pkg.helping_functions import normalize_angle, quaternion_to_euler
+from nav_msgs.msg import Odometry
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float64
+
+SOURCES = ('GT', 'Noisy', 'Filtered')
+
+
+class YawPlotPublisher(Node):
+
+    def __init__(self):
+        super().__init__('Yaw_Plot_Node')
+        self.gt_unwrapped = None   # rad, continuous
+        self.last_unwrapped = {}   # per source, rad
+        self.pubs = {}
+        for src in SOURCES:
+            self.pubs[src] = self.create_publisher(Float64, '/Car_Yaw_' + src, 10)
+            self.create_subscription(
+                Odometry, '/Car_Odom_' + src,
+                lambda msg, s=src: self.odom_callback(s, msg), 10)
+
+    def odom_callback(self, src, msg: Odometry):
+        q = msg.pose.pose.orientation
+        yaw = quaternion_to_euler(q.x, q.y, q.z, q.w)[2]
+
+        # Reference to unwrap around: GT's own previous value, or GT for the others.
+        if src == 'GT':
+            ref = self.gt_unwrapped
+        else:
+            ref = self.gt_unwrapped
+            if ref is None:
+                ref = self.last_unwrapped.get(src)
+        unwrapped = yaw if ref is None else ref + normalize_angle(yaw - ref)
+
+        if src == 'GT':
+            self.gt_unwrapped = unwrapped
+        self.last_unwrapped[src] = unwrapped
+        self.pubs[src].publish(Float64(data=math.degrees(unwrapped)))
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = YawPlotPublisher()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="resource/csen934_project_pkg">
+
+</file>
+
+<file path="test/test_copyright.py">
+# Copyright 2015 Open Source Robotics Foundation, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from ament_copyright.main import main
+import pytest
+
+
+# Remove the `skip` decorator once the source file(s) have a copyright header
+@pytest.mark.skip(reason='No copyright header has been placed in the generated source file.')
+@pytest.mark.copyright
+@pytest.mark.linter
+def test_copyright():
+    rc = main(argv=['.', 'test'])
+    assert rc == 0, 'Found errors'
+</file>
+
+<file path="test/test_flake8.py">
+# Copyright 2017 Open Source Robotics Foundation, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from ament_flake8.main import main_with_errors
+import pytest
+
+
+@pytest.mark.flake8
+@pytest.mark.linter
+def test_flake8():
+    rc, errors = main_with_errors(argv=[])
+    assert rc == 0, \
+        'Found %d code style errors / warnings:\n' % len(errors) + \
+        '\n'.join(errors)
+</file>
+
+<file path="test/test_pep257.py">
+# Copyright 2015 Open Source Robotics Foundation, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from ament_pep257.main import main
+import pytest
+
+
+@pytest.mark.linter
+@pytest.mark.pep257
+def test_pep257():
+    rc = main(argv=['.', 'test'])
+    assert rc == 0, 'Found code style errors / warnings'
+</file>
+
+<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Define_Sensors.py">
+def init_sensors(driver, timestep):
+    """
+    Initializes and enables all required Webots sensors.
+    Returns a dictionary containing the sensor objects.
+    """
+    camera = driver.getDevice('front_camera')
+    if camera:
+        camera.enable(timestep)
+
+    gps = driver.getDevice('gps')
+    if gps:
+        gps.enable(timestep)
+
+    imu = driver.getDevice('imu')
+    if imu:
+        imu.enable(timestep)
+
+    gyro = driver.getDevice('gyro')
+    if gyro:
+        gyro.enable(timestep)
+        
+    lidar = driver.getDevice('lidar')
+    if lidar:
+        lidar.enable(timestep * 10)  # Throttled to ~10Hz
+        lidar.enablePointCloud()
+
+    return {
+        'camera': camera,
+        'gps': gps,
+        'imu': imu,
+        'gyro': gyro,
+        'lidar': lidar
+    }
+</file>
+
+<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Helping_Functions.py">
+import math
+
+def euler_to_quaternion(roll, pitch, yaw):
+    """
+    Converts Euler angles to quaternion.
+    """
+    qx = math.sin(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) - math.cos(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
+    qy = math.cos(roll/2) * math.sin(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.cos(pitch/2) * math.sin(yaw/2)
+    qz = math.cos(roll/2) * math.cos(pitch/2) * math.sin(yaw/2) - math.sin(roll/2) * math.sin(pitch/2) * math.cos(yaw/2)
+    qw = math.cos(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
+    return [qx, qy, qz, qw]
+</file>
+
+<file path="README.md">
+# Design-Of-Autonomus-Stack
+</file>
+
+<file path="setup.cfg">
+[develop]
+script_dir=$base/lib/csen934_project_pkg
+[install]
+install_scripts=$base/lib/csen934_project_pkg
+</file>
+
+<file path="csen934_project_pkg/helping_functions.py">
+"""
+Shared math helpers for the localization nodes (noise + EKF).
+
+euler_to_quaternion mirrors the provided
+Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Helping_Functions.py,
+which is a Webots controller file and is not importable from the ROS package.
+"""
+import math
+
+
+def euler_to_quaternion(roll, pitch, yaw):
+    """Convert roll, pitch, yaw (rad, ZYX order) to a quaternion [x, y, z, w]."""
+    cr, sr = math.cos(roll / 2), math.sin(roll / 2)
+    cp, sp = math.cos(pitch / 2), math.sin(pitch / 2)
+    cy, sy = math.cos(yaw / 2), math.sin(yaw / 2)
+    qx = sr * cp * cy - cr * sp * sy
+    qy = cr * sp * cy + sr * cp * sy
+    qz = cr * cp * sy - sr * sp * cy
+    qw = cr * cp * cy + sr * sp * sy
+    return [qx, qy, qz, qw]
+
+
+def quaternion_to_euler(qx, qy, qz, qw):
+    """Convert a quaternion [x, y, z, w] to roll, pitch, yaw (rad, ZYX order)."""
+    roll = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+    sin_pitch = max(-1.0, min(1.0, 2 * (qw * qy - qz * qx)))
+    pitch = math.asin(sin_pitch)
+    yaw = math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+    return roll, pitch, yaw
+
+
+def normalize_angle(angle):
+    """Wrap an angle to [-pi, pi)."""
+    return (angle + math.pi) % (2 * math.pi) - math.pi
+</file>
+
+<file path="csen934_project_pkg/localization_add_noise.py">
+"""
+Localization with Noise.
+
+Subscribes to the ground-truth odometry from Webots, adds zero-mean Gaussian
+noise to the quantities listed in the milestone spec, fills the matching
+covariance fields, and republishes it as a noisy measurement.
+
+    Subscribes: /Car_Odom_GT     (nav_msgs/msg/Odometry)
+    Publishes:  /Car_Odom_Noisy  (nav_msgs/msg/Odometry)
+
+Default standard deviations (spec):
+    x, y           0.3 m
+    yaw            1 deg
+    linear speed   0.3 m/s   (twist.linear.x, forward speed in base_link)
+    angular speed  1 deg/s   (twist.angular.z, yaw rate)
+"""
+import copy
+import math
+
+from csen934_project_pkg.helping_functions import (
+    euler_to_quaternion,
+    normalize_angle,
+    quaternion_to_euler,
+)
+from nav_msgs.msg import Odometry
+import numpy as np
+import rclpy
+from rclpy.node import Node
+
+# Indices into the row-major 6x6 covariance arrays [x, y, z, rot_x, rot_y, rot_z].
+IDX_X = 0 * 6 + 0
+IDX_Y = 1 * 6 + 1
+IDX_YAW = 5 * 6 + 5
+
+
+class LocalizationAddNoise(Node):
+
+    def __init__(self):
+        super().__init__('Localization_Add_Noise_Node')
+
+        # Std deviations are parameters so experiments can change them without
+        # editing code: ros2 run ... --ros-args -p std_xy:=0.5
+        self.std_xy = self.declare_parameter('std_xy', 0.3).value
+        self.std_yaw = math.radians(self.declare_parameter('std_yaw_deg', 1.0).value)
+        self.std_v = self.declare_parameter('std_linear_speed', 0.3).value
+        self.std_w = math.radians(
+            self.declare_parameter('std_angular_speed_deg', 1.0).value)
+        seed = self.declare_parameter('seed', -1).value
+        self.rng = np.random.default_rng(None if seed < 0 else seed)
+
+        self.sub = self.create_subscription(
+            Odometry, '/Car_Odom_GT', self.gt_callback, 10)
+        self.pub = self.create_publisher(Odometry, '/Car_Odom_Noisy', 10)
+
+        self.get_logger().info(
+            'Adding noise: std_xy=%.3f m, std_yaw=%.2f deg, '
+            'std_v=%.3f m/s, std_w=%.2f deg/s' % (
+                self.std_xy, math.degrees(self.std_yaw),
+                self.std_v, math.degrees(self.std_w)))
+
+    def gt_callback(self, gt: Odometry):
+        # Keep header (stamp + frames) from GT so the three topics line up in rqt_plot.
+        noisy = copy.deepcopy(gt)
+        n = self.rng.normal
+
+        # --- Pose: x, y, yaw ---
+        noisy.pose.pose.position.x += n(0.0, self.std_xy)
+        noisy.pose.pose.position.y += n(0.0, self.std_xy)
+
+        q = gt.pose.pose.orientation
+        roll, pitch, yaw = quaternion_to_euler(q.x, q.y, q.z, q.w)
+        yaw = normalize_angle(yaw + n(0.0, self.std_yaw))
+        qx, qy, qz, qw = euler_to_quaternion(roll, pitch, yaw)
+        noisy.pose.pose.orientation.x = qx
+        noisy.pose.pose.orientation.y = qy
+        noisy.pose.pose.orientation.z = qz
+        noisy.pose.pose.orientation.w = qw
+
+        # --- Twist: forward speed and yaw rate ---
+        noisy.twist.twist.linear.x += n(0.0, self.std_v)
+        noisy.twist.twist.angular.z += n(0.0, self.std_w)
+
+        # --- Covariances (variance = std^2) for the noised quantities ---
+        # Other entries stay at the GT value (zero): those fields were not perturbed.
+        pose_cov = [0.0] * 36
+        pose_cov[IDX_X] = self.std_xy ** 2
+        pose_cov[IDX_Y] = self.std_xy ** 2
+        pose_cov[IDX_YAW] = self.std_yaw ** 2
+        noisy.pose.covariance = pose_cov
+
+        twist_cov = [0.0] * 36
+        twist_cov[IDX_X] = self.std_v ** 2
+        twist_cov[IDX_YAW] = self.std_w ** 2
+        noisy.twist.covariance = twist_cov
+
+        self.pub.publish(noisy)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = LocalizationAddNoise()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="Webots_Worlds_Controller/Worlds/city.wbt">
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/CurvedRoadSegment.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/RoadLine.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/StraightRoadSegment.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/RoadIntersection.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/GenericTrafficLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/CrossRoadsTrafficLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/BuildingUnderConstruction.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/CommercialBuilding.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/UBuilding.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/HollowBuilding.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/Hotel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/TheThreeTowers.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/CyberboticsTower.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/BigGlassTower.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/Auditorium.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/Museum.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/ResidentialBuilding.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/buildings/protos/FastFoodRestaurant.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/trees/protos/Oak.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/trees/protos/Pine.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/trees/protos/Cypress.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/trees/protos/Sassafras.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/trees/protos/BigSassafras.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/PedestrianCrossing.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/CautionSign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/CautionPanel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/OrderSign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/OrderPanel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/StopSign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/StopPanel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/YieldSign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/SpeedLimitSign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/SpeedLimitPanel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/TrafficCone.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/advertising_board/protos/AdvertisingBoard.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/HighwayPole.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/HighwaySign.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/obstacles/protos/OilBarrel.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/Crossroad.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/vehicles/protos/tesla/TeslaModel3.proto"
+
+WorldInfo {
+  info [
+    "Autonomous Vehicle Simulation"
+    "The simple controller example uses an on-board camera to follow the yellow road lines and a SICK sensor to avoid the obstacles."
+    "The control of the vehicle is done using the driver library."
+    "The vehicle based on the Car PROTO is modelled with realistic physics properties: motor torques, body mass, friction forces, suspensions, etc."
+  ]
+  title "City"
+  ERP 0.6
+  basicTimeStep 10
+  lineScale 1
+  contactProperties [
+    ContactProperties {
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "CitroenCZeroWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "ToyotaPriusWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "LincolnMKZWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "RangeRoverSportSVRWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
+      material2 "TruckWheels"
+      coulombFriction [
+        8
+      ]
+      softCFM 1e-05
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.04686201783167759 0.001634365453820676 0.9989000351057692 3.0808871061087877
+  position -36.39495265138715 45.889063100200865 2.39853570206887
+  near 1
+  follow "tesla_vehicle"
+  followType "Mounted Shot"
+  followSmoothness 0
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Fog {
+  color 0.38 0.35 0.32
+  visibilityRange 1000
+}
+DEF GROUND Solid {
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        baseColorMap ImageTexture {
+          url [
+            "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/vehicles/worlds/textures/ground.jpg"
+          ]
+        }
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 500 500
+        }
+      }
+      geometry DEF GROUND_PLANE Plane {
+        size 2000 2000
+      }
+    }
+  ]
+  boundingObject USE GROUND_PLANE
+  locked TRUE
+}
+CurvedRoadSegment {
+  translation -64.5 4.5 0.02
+  rotation 0 0 1 1.5708
+  id "0"
+  startJunction "25"
+  endJunction "17"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -105 4.5 0.02
+  rotation 0 0 1 -1.5723853071795864
+  name "road(1)"
+  id "1"
+  startJunction "25"
+  endJunction "24"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 69
+}
+CurvedRoadSegment {
+  translation -64.5 -64.5 0.02
+  rotation 0 0 1 3.14156
+  name "road(2)"
+  id "2"
+  startJunction "23"
+  endJunction "24"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -64.5 -105 0.02
+  name "road(3)"
+  id "3"
+  startJunction "23"
+  endJunction "22"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 69
+}
+CurvedRoadSegment {
+  translation 4.5 -64.5 0.02
+  rotation 0 0 1 -1.5723853071795864
+  name "road(4)"
+  id "4"
+  startJunction "16"
+  endJunction "22"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+RoadIntersection {
+  translation 45 -45 0.02
+  rotation 0 0 1 0.785398
+  id "16"
+  connectedRoadIDs [
+    "11"
+    "4"
+    "10"
+    "5"
+  ]
+  roadsWidth 21.5
+  startRoadsLength [
+    8.75
+  ]
+  startRoadsNumberOfLanes 4
+  startRoadsStartLine [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_dashed.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_dashed.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_triangle.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_triangle.png"
+  ]
+  startRoadsLine [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  startRoadBorder FALSE
+}
+StraightRoadSegment {
+  translation 45 4.5 0.02
+  rotation 0 0 1 -1.5708
+  name "road(5)"
+  id "5"
+  startJunction "28"
+  endJunction "16"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 30
+}
+CurvedRoadSegment {
+  translation 4.5 4.5 0.02
+  name "road(6)"
+  id "6"
+  startJunction "29"
+  endJunction "28"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -25.5 45 0.02
+  name "road(7)"
+  id "7"
+  startJunction "17"
+  endJunction "29"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 30
+}
+RoadIntersection {
+  translation -45 45 0.02
+  rotation 0 0 1 0.785398
+  name "road intersection(1)"
+  id "17"
+  connectedRoadIDs [
+    "7"
+    "8"
+    "0"
+    "15"
+  ]
+  roadsWidth 21.5
+  startRoadsLength [
+    8.75
+  ]
+  startRoadsNumberOfLanes 4
+  startRoadsStartLine [
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_dashed.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_dashed.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_triangle.png"
+    "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/road/protos/textures/road_line_triangle.png"
+  ]
+  startRoadsLine [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  startRoadBorder FALSE
+}
+StraightRoadSegment {
+  translation -45 25.5 0.02
+  rotation 0 0 -1 1.5708
+  name "road(8)"
+  id "8"
+  startJunction "17"
+  endJunction "26"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 30
+}
+CurvedRoadSegment {
+  translation -4.5 -4.5 0.02
+  rotation 0 0 1 3.14156
+  name "road(9)"
+  id "9"
+  startJunction "27"
+  endJunction "26"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation -4.5 -45 0.02
+  name "road(10)"
+  id "10"
+  startJunction "27"
+  endJunction "16"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 30
+}
+CurvedRoadSegment {
+  translation 64.5 -4.5 0.02
+  rotation 0 0 1 -1.5708
+  name "road(11)"
+  id "11"
+  startJunction "21"
+  endJunction "16"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation 105 -4.5 0.02
+  rotation 0 0 1 1.57079
+  name "road(12)"
+  id "12"
+  startJunction "21"
+  endJunction "20"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 69
+}
+CurvedRoadSegment {
+  translation 64.5 64.5 0.02
+  name "road(13)"
+  id "13"
+  startJunction "19"
+  endJunction "20"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+StraightRoadSegment {
+  translation 64.5 105 0.02
+  rotation 0 0 1 3.14156
+  name "road(14)"
+  id "14"
+  startJunction "19"
+  endJunction "18"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  length 69
+}
+CurvedRoadSegment {
+  translation -4.5 64.5 0.02
+  rotation 0 0 1 1.5708
+  name "road(15)"
+  id "15"
+  startJunction "17"
+  endJunction "18"
+  width 21.5
+  numberOfLanes 4
+  numberOfForwardLanes 2
+  lines [
+    RoadLine {
+    }
+    RoadLine {
+      color 0.85 0.75 0.3
+      type "double"
+    }
+  ]
+  rightBorder FALSE
+  leftBorder FALSE
+  rightBarrier TRUE
+  leftBarrier TRUE
+  curvatureRadius 40.5
+}
+TeslaModel3 {
+  hidden position_0_0 -2.170671713476719e-06
+  hidden position2_0_0 0.0007157404718868116
+  hidden position_0_1 2.170665121642063e-06
+  hidden position2_0_1 0.0007157405264007213
+  hidden position_0_2 -6.818690553496589e-05
+  hidden position_0_3 -6.818675478470482e-05
+  hidden rotation_1 0.9999998075703347 -0.0004370659821888638 0.000440264262452913 1.5707961930971168
+  hidden rotation_2 0.9999998075703199 0.00043706600385576684 -0.0004402642746260795 1.5707961930971301
+  hidden rotation_3 0.9999999974024495 5.0966177725587386e-05 -5.096616107010333e-05 1.5707960025975498
+  hidden rotation_4 0.9999999974024608 -5.096606686016792e-05 5.0966050204720074e-05 1.5707960025975392
+  translation -44.99918842345925 45.899998706776564 0.27300987554338996
+  rotation 0.003517312874811407 -2.803468638401966e-06 0.9999938142320087 3.140000009772625
+  name "tesla_vehicle"
+  controller "CSEN934_Test_OL_Sensors"
+  sensorsSlotFront [
+    Camera {
+      translation 0 0.1 0
+      name "front_camera"
+      width 256
+      height 150
+    }
+  ]
+  sensorsSlotTop [
+    Lidar {
+      horizontalResolution 720
+      fieldOfView 6.2832
+      verticalFieldOfView 0.52
+      numberOfLayers 4
+      minRange 0.5
+      maxRange 50
+    }
+  ]
+  sensorsSlotCenter [
+    Group {
+      children [
+        Gyro {
+        }
+        InertialUnit {
+          name "imu"
+        }
+        GPS {
+        }
+      ]
+    }
+  ]
+}
+GenericTrafficLight {
+  translation -34.665 55.2732 0
+  startGreen FALSE
+  greenTime 10
+  redTime 10
+  state "green"
+}
+CrossRoadsTrafficLight {
+  translation 45 -45 0
+}
+DEF STONES Solid {
+  translation 5.03891 -136.158 -4.23581
+  children [
+    DEF STONES_GROUP Group {
+      children [
+        Pose {
+          translation 0 2 -0.6
+          children [
+            Shape {
+              appearance DEF OBJECTS_APPEARANCE PBRAppearance {
+                baseColor 0.5 0.5 0.5
+                roughness 1
+                metalness 0
+              }
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 0.5 -3.5 -0.3
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 4 2 -0.15
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 6 -1 0
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 9 0 0.15
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 5.5 -5 0.2
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 0 0 0.05
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 10 5 0
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 1 6 0.3
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 13 -4 0
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 13.5 1.5 0.4
+          children [
+            Shape {
+              appearance USE OBJECTS_APPEARANCE
+              geometry Sphere {
+                radius 5
+                subdivision 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE STONES_GROUP
+}
+BuildingUnderConstruction {
+  translation 112.102 110.896 0
+}
+CommercialBuilding {
+  translation 70.9574 31.6315 0
+}
+UBuilding {
+  translation -87.1466 81.9927 0
+}
+HollowBuilding {
+}
+Hotel {
+  translation -9.97953 71.6228 0
+}
+TheThreeTowers {
+  translation 68.118 -90.636 0
+}
+CyberboticsTower {
+  translation 27.5187 68.7504 0
+}
+BigGlassTower {
+  translation 68.6779 -9.29537 0
+  rotation 0 0 1 1.5708
+}
+Auditorium {
+  translation -63.9296 -61.9719 0
+  rotation 0 0 1 -0.9163
+}
+Museum {
+  translation -0.191182 -68.6571 0
+  rotation 0 0 1 1.5708
+}
+ResidentialBuilding {
+  translation -69.274 -1.81329 0
+}
+FastFoodRestaurant {
+  translation 51.749488 50.065561 0.004
+  rotation 0 0 -1 1.8325926
+  height 4.3
+  length 11
+  width 11
+  brand "subway"
+  numberOfSides 2
+}
+Oak {
+  translation 81.7751 -19.8126 0
+}
+Pine {
+  translation 50.4097 -99.1307 0
+  name "tree(1)"
+}
+Cypress {
+  translation 56.567 -81.7163 0
+  name "tree(2)"
+}
+Sassafras {
+  translation -36.8744 -75.9885 0
+  name "tree(3)"
+}
+BigSassafras {
+  translation -35.4355 -54.5924 0
+  name "tree(4)"
+}
+Oak {
+  translation 61.566 5.24018 0
+  name "tree(5)"
+}
+Pine {
+  translation -26.6541 -68.7408 0
+  name "tree(6)"
+}
+Cypress {
+  translation 26.6454 -62.6042 0
+  name "tree(7)"
+}
+Sassafras {
+  translation 68.1255 79.3778 0
+  name "tree(8)"
+}
+BigSassafras {
+  translation 121.7561 79.9763 0
+  name "tree(9)"
+}
+Oak {
+  translation 45.3761 87.5263 0
+  name "tree(10)"
+}
+Pine {
+  translation 4.80322 63.11 0
+  name "tree(11)"
+}
+Cypress {
+  translation -85.4708 4.92425 0
+  name "tree(12)"
+}
+Sassafras {
+  translation -85.8355 -9.61883 0
+  name "tree(13)"
+}
+BigSassafras {
+  translation -84.6727 -24.9703 0
+  name "tree(14)"
+}
+Oak {
+  translation -76.3128 81.8021 0
+  name "tree(15)"
+}
+Pine {
+  translation 81.4509 120.797 0
+  name "tree(16)"
+}
+Cypress {
+  translation -106.804 42.6205 0
+  name "tree(17)"
+}
+Sassafras {
+  translation -32.2671 115.416 0
+  name "tree(18)"
+}
+BigSassafras {
+  translation 121.921 33.1395 0
+  name "tree(19)"
+}
+PedestrianCrossing {
+  translation 45 -26 -0.06
+  rotation 0 0 1 -3.1415853071795863
+}
+PedestrianCrossing {
+  translation -61.4608 45.0693 -0.06
+  rotation 0 0 1 -1.5707853071795865
+  name "pedestrian crossing(1)"
+}
+CautionSign {
+  translation -91.9275 48.9391 0
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/turn_left.jpg"
+      ]
+    }
+  ]
+}
+CautionSign {
+  translation 8.87679 55.4925 0
+  name "caution sign(1)"
+}
+CautionSign {
+  translation 33.842 10.5534 0
+  rotation 0 0 1 1.7017
+  name "caution sign(2)"
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/bump.jpg"
+      ]
+    }
+  ]
+}
+CautionSign {
+  translation 84.01191 -26.81263 0
+  rotation 0 0 1 0.6545
+  name "caution sign(3)"
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/cross_roads.jpg"
+      ]
+    }
+  ]
+}
+CautionSign {
+  translation -5.43669 -34.1146 0
+  rotation 0 0 1 -0.5236
+  name "caution sign(4)"
+  signBoards [
+    CautionPanel {
+      translation 0 0 -0.17
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/turn_right.jpg"
+      ]
+    }
+  ]
+}
+OrderSign {
+  translation -45.1363 34.6769 0
+  rotation 0 0 1 1.5708
+}
+OrderSign {
+  translation -55.4085 34.1742 0
+  rotation 0 0 1 1.5708
+  name "order sign(1)"
+}
+OrderSign {
+  translation -67.6589 34.4983 0
+  rotation 0 0 1 3.14159
+  name "order sign(2)"
+  signBoards [
+    OrderPanel {
+      translation 0.026 0 -0.175
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/no_right_turn.jpg"
+      ]
+    }
+  ]
+}
+OrderSign {
+  translation 5.21302 94.5041 0
+  rotation 0 0 1 3.14159
+  name "order sign(3)"
+  signBoards [
+    OrderPanel {
+      translation 0.026 0 -0.175
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/no_pedestrian_crossing.jpg"
+      ]
+    }
+  ]
+}
+StopSign {
+  translation -34.6012 34.2884 0
+  rotation 0 0 1 -1.5708
+  signBoards [
+    StopPanel {
+      translation 0 0 -0.097
+    }
+    OrderPanel {
+      translation -0.03 0 -0.11
+      rotation 0 0 1 3.1415926
+    }
+  ]
+}
+YieldSign {
+  translation -55.468 66.4958 0
+  rotation 0 0 1 1.5708
+}
+SpeedLimitSign {
+  translation -113.192 20.4404 0
+  rotation 0 0 1 0.9163
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/speed_limit_55.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation 26.49986 -84.257796 0
+  rotation 0 0 1 0.6545
+  name "speed limit(1)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/speed_limit_55.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation -30.317445 79.098744 0
+  rotation 0 0 1 -2.3562
+  name "speed limit(2)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/speed_limit_65.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation 87.1538 -50.335 0
+  rotation 0 0 1 -3.14159
+  name "speed limit(3)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/speed_limit_65.jpg"
+      ]
+    }
+  ]
+}
+SpeedLimitSign {
+  translation 31.0289 -34.4459 0
+  name "speed limit(4)"
+  signBoards [
+    SpeedLimitPanel {
+      translation 0.023 0 0
+      signImage [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/signs/us/one_way_sign_left.jpg"
+      ]
+    }
+  ]
+}
+TrafficCone {
+  translation -50.81735518427135 33.90679997858879 -0.004076718672611251
+  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -53.34475518427135 33.90679997858879 -0.004076718672611251
+  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  name "traffic cone(1)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -48.16815518427135 34.0094999785888 -0.004076718672611251
+  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  name "traffic cone(2)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -45.10425447644976 26.35434520634681 -0.004076718672611251
+  rotation -0.00021751184277000248 0.9999707008526226 -0.0076518053368536286 0.013691192027821875
+  name "traffic cone(3)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -45.56035447644975 33.90824520634682 -0.004076718672611251
+  rotation -0.00021751184276978136 0.9999707008526225 -0.007651805336847625 0.013691192027821876
+  name "traffic cone(4)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -45.095255184271345 16.183199978588757 -0.004076718672611251
+  rotation -0.0002731636563667695 0.9999998490525938 0.00047673515365073856 0.013690792761012921
+  name "traffic cone(5)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -45.29575518427134 5.310339978588779 -0.004076718672611251
+  rotation -0.00027316365636744796 0.9999998490525936 0.0004767351536546437 0.01369079276101292
+  name "traffic cone(6)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -44.782155184271346 -7.339150021411221 -0.004076718672611251
+  rotation -0.00027316365636744796 0.9999998490525936 0.0004767351536546437 0.01369079276101292
+  name "traffic cone(7)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.974044815728654 -53.76080002141121 -0.004076718672611251
+  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  name "traffic cone(8)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.96964481572866 -51.435000021411206 -0.004076718672611251
+  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  name "traffic cone(9)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.953544815728655 -48.9544000214112 -0.004076718672611251
+  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  name "traffic cone(10)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 33.71714481572865 -45.7234000214112 -0.004076718672611251
+  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  name "traffic cone(11)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -35.360855184271344 -30.23390002141124 -0.004076718672611251
+  rotation -0.0002731636563669238 0.9999998490525936 0.00047673515365071807 0.01369079276101292
+  name "traffic cone(12)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -42.324755184271346 -18.608400021411242 -0.004076718672611251
+  rotation -0.0002731636563670776 0.9999998490525936 0.0004767351536507187 0.01369079276101292
+  name "traffic cone(13)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -26.685755184271322 -38.237200021411205 -0.004076718672611251
+  rotation -0.00027316365636812087 0.9999998490525936 0.00047673515371997923 0.01369079276101292
+  name "traffic cone(14)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -13.726455184271346 -43.786400021411204 -0.004076718672611251
+  rotation -0.00027316365636781593 0.9999998490525935 0.0004767351537162624 0.01369079276101314
+  name "traffic cone(15)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation -1.3851451842713445 -44.867300021411204 -0.004076718672611251
+  rotation -0.00027316365636840644 0.9999998490525936 0.0004767351537234116 0.013690792761013138
+  name "traffic cone(16)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 11.217444815728653 -44.8955000214112 -0.004076718672611251
+  rotation -0.00027316365636781593 0.9999998490525935 0.0004767351537162624 0.01369079276101314
+  name "traffic cone(17)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+TrafficCone {
+  translation 22.153044815728677 -44.8152000214112 -0.004076718672611251
+  rotation -0.00027316365636808617 0.9999998490525936 0.00047673515371997685 0.01369079276101292
+  name "traffic cone(18)"
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
+AdvertisingBoard {
+  translation 48.100535 -116.28367 0
+  rotation 0 0 1 2.61799
+  backTexture []
+  displayBackLight TRUE
+  displayWidth 8
+  displayHeight 6
+  frameThickness 0.9
+  frameColor 0.52549 0.52549 0.52549
+  poleNumber 2
+  poleHeight 11
+  baseRatio 5.8
+}
+HighwayPole {
+  translation -17.67 -117.85 0
+  rotation 0 0 -1 3.14159
+  height 9
+  length 12
+  rightHorizontalSigns [
+    HighwaySign {
+      translation 0 -4.56 0
+      name "horizontal highway sign"
+      height 4
+      length 5.5
+      texture [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/highway_sign_bayonne.jpg"
+      ]
+    }
+  ]
+  rightVerticalSigns [
+    HighwaySign {
+      name "vertical highway sign"
+      height 2.5
+      length 3
+      texture [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/traffic/protos/textures/highway_sign_sebastian.jpg"
+      ]
+    }
+  ]
+}
+OilBarrel {
+  translation -110.31684 -66.875162 0.5998773749999997
+  rotation 1.161134343734179e-19 -7.932434570326124e-20 1 3.14159
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -107.04991 -33.037806 0.5998773749999997
+  rotation -4.1039641071023056e-19 -4.245167659765774e-19 1 3.14159
+  name "oil barrel(1)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -103.169 -54.770003 0.5998773749999997
+  rotation -4.1039641071023056e-19 -4.245167659765774e-19 1 3.14159
+  name "oil barrel(2)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -45 -105.104 0.5998773749999996
+  rotation 7.688982229557325e-19 1.7493130222823275e-19 -0.9999999999999999 1.5707953071795862
+  name "oil barrel(3)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -21.3988 -45.2699 0.5998773749999997
+  rotation 1.1364777506875523e-18 -1.7287777159882828e-19 -1 1.1781
+  name "oil barrel(4)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -22.9161 -45.3401 0.5998773749999997
+  rotation 5.191132684155128e-19 3.477958030405859e-21 1 1.9634953071795869
+  name "oil barrel(5)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -22.1326 -45.7229 0.5998773749999997
+  rotation 0.29129133345031905 -0.6735012369048421 0.6793713586429609 3.1487355075542826e-19
+  name "oil barrel(6)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+OilBarrel {
+  translation -48.6853 20.1904 0.5998773749999996
+  rotation 1.392552999983864e-19 5.7109680075987985e-19 1 3.01069
+  name "oil barrel(7)"
+  height 1.2
+  radius 0.4
+  physics Physics {
+    density -1
+    mass 100
+    damping Damping {
+    }
+  }
+}
+Crossroad {
+  translation -4.5001488 105 0
+  id "18"
+  shape []
+  connectedRoadIDs [
+    "15"
+    "14"
+  ]
+}
+Crossroad {
+  translation 64.499851 105 0
+  name "crossroad(1)"
+  id "19"
+  shape []
+  connectedRoadIDs [
+    "13"
+    "14"
+  ]
+}
+Crossroad {
+  translation 104.99978 64.500074 0
+  name "crossroad(2)"
+  id "20"
+  shape []
+  connectedRoadIDs [
+    "12"
+    "13"
+  ]
+}
+Crossroad {
+  translation 105 -4.4999256 0
+  name "crossroad(3)"
+  id "21"
+  shape []
+  connectedRoadIDs [
+    "11"
+    "12"
+  ]
+}
+Crossroad {
+  translation 4.5 -104.99975 0
+  name "crossroad(4)"
+  id "22"
+  shape []
+  connectedRoadIDs [
+    "3"
+    "4"
+  ]
+}
+Crossroad {
+  translation -64.5 -105 0
+  name "crossroad(5)"
+  id "23"
+  shape []
+  connectedRoadIDs [
+    "2"
+    "3"
+  ]
+}
+Crossroad {
+  translation -104.99987 -64.499926 0
+  name "crossroad(6)"
+  id "24"
+  shape []
+  connectedRoadIDs [
+    "1"
+    "2"
+  ]
+}
+Crossroad {
+  translation -105 4.4999794 0
+  name "crossroad(7)"
+  id "25"
+  shape []
+  connectedRoadIDs [
+    "0"
+    "1"
+  ]
+}
+Crossroad {
+  translation -44.999865 -4.4999256 0
+  name "crossroad(8)"
+  id "26"
+  shape []
+  connectedRoadIDs [
+    "8"
+    "9"
+  ]
+}
+Crossroad {
+  translation -4.5 -45 0
+  name "crossroad(9)"
+  id "27"
+  shape []
+  connectedRoadIDs [
+    "9"
+    "10"
+  ]
+}
+Crossroad {
+  translation 45 4.5000744 0
+  name "crossroad(10)"
+  id "28"
+  shape []
+  connectedRoadIDs [
+    "6"
+    "5"
+  ]
+}
+Crossroad {
+  translation 4.4998512 45.00011 0
+  name "crossroad(11)"
+  id "29"
+  shape []
+  connectedRoadIDs [
+    "7"
+    "6"
+  ]
+}
+</file>
+
+<file path=".gitignore">
+__pycache__/
+*.pyc
+/build
+/install
+/log
+/.idea
+
+# Local environment / launcher
+.venv/
+run_sim.sh
+</file>
+
+<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/CSEN934_Test_OL_Sensors.py">
+import math
+
+from sensor_msgs.msg import PointCloud2, Image
+
+from geometry_msgs.msg import TransformStamped
+from tf2_ros import TransformBroadcaster
+
+from sensor_msgs.msg import PointCloud2
+import sensor_msgs_py.point_cloud2 as pc2
+from std_msgs.msg import Header
+
+import rclpy
+from ackermann_msgs.msg import AckermannDrive
+from nav_msgs.msg import Odometry
+from vehicle import Driver
+
+# Import from local helper files
+from Helping_Functions import euler_to_quaternion
+from Define_Sensors import init_sensors
+
+# 1. Initialize Webots Driver directly
+driver = Driver()
+timestep = int(driver.getBasicTimeStep())
+
+# 2. Initialize ROS 2 Node
+rclpy.init(args=None)
+node = rclpy.create_node('Tesla_Node')
+
+# 3. Enable Webots Sensors using Define_Sensors.py
+sensors = init_sensors(driver, timestep)
+gps = sensors['gps']
+imu = sensors['imu']
+gyro = sensors['gyro']
+
+# 4. Command Callback
+def cmd_callback(msg):
+    target_speed_kmh = msg.speed * 3.6
+    driver.setCruisingSpeed(target_speed_kmh)
+    driver.setSteeringAngle(msg.steering_angle)
+
+# 5. Subscribers and Publishers
+sub = node.create_subscription(
+    AckermannDrive, 
+    '/Car_Ackrm', 
+    cmd_callback, 
+    10
+)
+
+odom_pub = node.create_publisher(
+    Odometry, 
+    '/Car_Odom_GT', 
+    10
+)
+
+#Initialize the camera publisher
+camera = sensors['camera']
+cam_pub = node.create_publisher(Image, '/front_camera/image_raw', 10)
+last_cam_t = -1.0
+CAM_PERIOD = 0.1  # 10 Hz
+
+#publisher setup
+pc_pub = node.create_publisher(PointCloud2, '/lidar_points', 10)
+lidar = sensors['lidar']
+
+#Initialize the Broadcaster
+tf_broadcaster = TransformBroadcaster(node)
+LIDAR_PERIOD = 0.1
+last_lidar_t = -1.0
+
+# SLAM DEBUG VARIABLES
+last_lidar_debug_t = -1.0
+lidar_publish_count = 0
+last_tf_debug_t = -1.0
+
+
+# 6. The Main Webots Execution Loop
+while driver.step() != -1:
+    rclpy.spin_once(node, timeout_sec=0)
+    stamp = node.get_clock().now().to_msg()
+    
+    if gps and imu and gyro:
+        odom_msg = Odometry()
+        odom_msg.header.stamp = stamp
+        odom_msg.header.frame_id = 'odom'
+        odom_msg.child_frame_id = 'base_link'
+        
+        # Position
+        position = gps.getValues()
+        odom_msg.pose.pose.position.x = position[0]
+        odom_msg.pose.pose.position.y = position[1]
+        odom_msg.pose.pose.position.z = position[2]
+        
+        # Orientation using the imported helper function
+        roll, pitch, yaw = imu.getRollPitchYaw()
+        qx, qy, qz, qw = euler_to_quaternion(roll, pitch, yaw)
+        odom_msg.pose.pose.orientation.x = qx
+        odom_msg.pose.pose.orientation.y = qy
+        odom_msg.pose.pose.orientation.z = qz
+        odom_msg.pose.pose.orientation.w = qw
+        
+        # Linear Velocity
+        vx_w, vy_w, vz_w = gps.getSpeedVector()
+        cos_yaw, sin_yaw = math.cos(yaw), math.sin(yaw)
+        odom_msg.twist.twist.linear.x = cos_yaw * vx_w + sin_yaw * vy_w
+        odom_msg.twist.twist.linear.y = -sin_yaw * vx_w + cos_yaw * vy_w
+        odom_msg.twist.twist.linear.z = vz_w
+        
+        # Angular Velocity
+        angular_vel = gyro.getValues()
+        odom_msg.twist.twist.angular.x = angular_vel[0]
+        odom_msg.twist.twist.angular.y = angular_vel[1]
+        odom_msg.twist.twist.angular.z = angular_vel[2]
+        
+        # Broadcast the TF from odom to base_link
+        t = TransformStamped()
+        t.header.stamp = stamp
+        t.header.frame_id = 'odom'
+        t.child_frame_id = 'base_link'
+        
+        t.transform.translation.x = position[0]
+        t.transform.translation.y = position[1]
+        t.transform.translation.z = position[2]
+        
+        t.transform.rotation.x = qx
+        t.transform.rotation.y = qy
+        t.transform.rotation.z = qz
+        t.transform.rotation.w = qw
+        
+        # Publish ground-truth odometry
+        odom_pub.publish(odom_msg)
+        # Broadcast odom -> base_link
+        tf_broadcaster.sendTransform(t)
+        
+        # SLAM DEBUG: Check robot odometry and TF
+        if driver.getTime() - last_tf_debug_t >= 2.0:
+            node.get_logger().info(
+                f'[SLAM DEBUG] ODOM OK | '
+                f'X: {position[0]:.2f} | '
+                f'Y: {position[1]:.2f} | '
+                f'Z: {position[2]:.2f} | '
+                f'TF: odom -> base_link'
+            )
+            last_tf_debug_t = driver.getTime()
+    
+    if lidar and driver.getTime() - last_lidar_t >= LIDAR_PERIOD - 1e-6:
+        last_lidar_t = driver.getTime()
+        # Get LiDAR point cloud
+        pc_data = lidar.getPointCloud()
+        point_count = len(pc_data) if pc_data else 0
+
+        if point_count > 0:
+            points = [(p.x, p.y, p.z) for p in pc_data]
+
+            header = Header()
+            header.stamp = stamp
+            header.frame_id = 'lidar'
+
+            pc2_msg = pc2.create_cloud_xyz32(header, points)
+            pc_pub.publish(pc2_msg)
+
+            lidar_publish_count += 1
+
+        # Print debugging information every 2 seconds
+        if driver.getTime() - last_lidar_debug_t >= 2.0:
+            if point_count > 0:
+                node.get_logger().info(
+                    f'[SLAM DEBUG] LiDAR OK | '
+                    f'Points: {point_count} | '
+                    f'Published messages: {lidar_publish_count}'
+                )
+            else:
+                node.get_logger().warning(
+                    '[SLAM DEBUG] LiDAR returned EMPTY point cloud!'
+                )
+
+            last_lidar_debug_t = driver.getTime()
+            
+    if camera and driver.getTime() - last_cam_t >= CAM_PERIOD - 1e-6:
+        last_cam_t = driver.getTime()
+        img_data = camera.getImage()
+        
+        if img_data:
+            img_msg = Image()
+            img_msg.header.stamp = stamp
+            img_msg.header.frame_id = 'base_link' 
+            img_msg.height = camera.getHeight()
+            img_msg.width = camera.getWidth()
+            img_msg.encoding = 'bgra8'
+            img_msg.step = camera.getWidth() * 4
+            img_msg.data = img_data
+            cam_pub.publish(img_msg)
+</file>
+
+<file path="Webots_Worlds_Controller/Worlds/.city.wbproj">
+Webots Project File version R2025a
+perspectives: 000000ff00000000fd0000000300000000000001ca0000039ffc0200000001fb00000012005300630065006e0065005400720065006501000000000000039f0000000000000000000000010000023a000003b5fc0200000001fb0000001400540065007800740045006400690074006f00720100000016000003b50000003f00ffffff000000030000073a0000008dfc0100000002fb0000000e0043006f006e0073006f006c006501000001d0000005b00000000000000000fb0000001a0043006f006e0073006f006c00650041006c006c0041006c006c01000000000000073a0000006900ffffff000004fe000003b500000004000000040000000100000008fc00000000
+simulationViewPerspectives: 000000ff00000001000000020000016c000004a00100000002010000000101
+sceneTreePerspectives: 000000ff00000001000000030000001c000000c0000000fa0100000002010000000201
+maximizedDockId: -1
+centralWidgetVisible: 1
+orthographicViewHeight: 1
+textFiles: -1
+consoles: Console:All:All
+renderingDevicePerspectives: tesla_vehicle:front_camera;1;1;0;0
+</file>
+
+<file path="package.xml">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>csen934_project_pkg</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="youssif@todo.todo">youssif</maintainer>
+  <license>TODO: License declaration</license>
+
+  <depend>rclpy</depend>
+  <depend>ackermann_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>std_msgs</depend>
+  <exec_depend>rqt_plot</exec_depend>
+  <exec_depend>rqt_graph</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <depend>webots_ros2_driver</depend>
+  
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>pointcloud_to_laserscan</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
+</file>
+
+<file path="setup.py">
+import os
+from glob import glob
+from setuptools import find_packages, setup
+
+package_name = 'csen934_project_pkg'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'Webots_Worlds_Controller/Worlds'), glob('Webots_Worlds_Controller/Worlds/*.wbt')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='youssif',
+    maintainer_email='youssif@todo.todo',
+    description='CSEN934 Project Package',
+    license='TODO: License declaration',
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
+    entry_points={
+        'console_scripts': [
+            #'ui_teleop = csen934_project_pkg.ui_teleop_node:main',
+            'control = csen934_project_pkg.control:main',
+            'localization_add_noise = csen934_project_pkg.localization_add_noise:main',
+            'localization_ekf_node = csen934_project_pkg.localization_ekf_node:main',
+            'yaw_plot_publisher = csen934_project_pkg.yaw_plot_publisher:main',
+            'localization_plots = csen934_project_pkg.localization_plots:main'
+        ],
+    },
+)
+</file>
+
+<file path="launch/teleop_launch.py">
+import os
+import launch
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    
+    slam_arg = DeclareLaunchArgument('slam', default_value='none',
+                                     description='toolbox | gmapping | none')
+
+    def slam_is(name):
+        return IfCondition(PythonExpression(
+            ["'", LaunchConfiguration('slam'), "' == '", name, "'"]))
+
+    ui_node = Node(
+        package='csen934_project_pkg',
+        executable='control',
+        name='control_teleop_node',
+        output='screen'
+    )
+    
+    noise_node = Node(
+        package='csen934_project_pkg',
+        executable='localization_add_noise',
+        name='Localization_Add_Noise_Node',
+        output='screen'
+    )
+    
+    ekf_node = Node(
+        package='csen934_project_pkg',
+        executable='localization_ekf_node',
+        name='Localization_EKF_Node',
+        output='screen'
+    )
+    
+    rqt_graph_node = Node(
+        package='rqt_graph', executable='rqt_graph', name='rqt_graph'
+    )
+
+    yaw_node = Node(
+        package='csen934_project_pkg',
+        executable='yaw_plot_publisher',
+        name='Yaw_Plot_Node',
+        output='screen'
+    )
+
+    plots_node = Node(
+        package='csen934_project_pkg',
+        executable='localization_plots',
+        name='Localization_Plots_Node',
+        output='screen'
+    )
+    
+    pc_to_laserscan_node = Node(
+        package='pointcloud_to_laserscan',
+        executable='pointcloud_to_laserscan_node',
+        name='pointcloud_to_laserscan',
+        output='screen',
+        remappings=[
+            ('cloud_in', '/lidar_points'),
+            ('scan', '/scan')
+        ],
+        parameters=[{
+            'target_frame': 'base_link', # Sliced relative to chassis
+            'transform_tolerance': 0.2,
+            'min_height': 0.3,           # Ignore ground hits
+            'max_height': 2.0,           # Ignore roof
+            'angle_min': -3.14159,
+            'angle_max': 3.14159,
+            'angle_increment': 0.0087,
+            'scan_time': 0.1,
+            'range_min': 0.45,
+            'range_max': 50.0,
+            'use_inf': True,
+        }]
+    )
+    
+    # Adjust the '1.3' Z-offset below if your LiDAR is mounted higher or lower on the Tesla roof
+    lidar_tf_node = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='lidar_tf_publisher',
+        arguments=['0.0', '0.0', '1.3', '0.0', '0.0', '0.0', 'base_link', 'lidar']
+    )
+
+    slam_toolbox_node = Node(
+        package='slam_toolbox', executable='async_slam_toolbox_node',
+        name='slam_toolbox', output='screen',
+        parameters=[os.path.join(get_package_share_directory('csen934_project_pkg'),
+                                 'config', 'slam_toolbox.yaml')],
+        arguments=[
+	    '--ros-args',
+	    '--log-level',
+	    'debug'
+	],
+        condition=slam_is('toolbox')
+    )
+
+    gmapping_node = Node(
+        package='slam_gmapping', executable='slam_gmapping',
+        name='slam_gmapping', output='screen',
+        parameters=[{'base_frame': 'base_link', 'odom_frame': 'odom',
+                     'map_frame': 'map', 'map_update_interval': 2.0,
+                     'maxUrange': 40.0, 'delta': 0.1}],
+        remappings=[('scan', '/scan')],
+        condition=slam_is('gmapping')
+    )
+
+    return LaunchDescription([
+        slam_arg, ui_node, noise_node, ekf_node, rqt_graph_node, yaw_node,
+        plots_node, pc_to_laserscan_node, lidar_tf_node,
+        slam_toolbox_node, gmapping_node,
+    ])
+</file>
+
+</files>
