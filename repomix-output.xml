@@ -42,6 +42,7 @@ The content is organized as follows:
 <directory_structure>
 csen934_project_pkg/
   config/
+    cartographer.lua
     slam_layout.rviz
     slam_toolbox.yaml
   __init__.py
@@ -85,6 +86,41 @@ setup.py
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="csen934_project_pkg/config/cartographer.lua">
+include "map_builder.lua"
+include "trajectory_builder.lua"
+
+options = {
+  map_builder = MAP_BUILDER,
+  trajectory_builder = TRAJECTORY_BUILDER,
+  map_frame = "map",
+  tracking_frame = "base_link",
+  published_frame = "odom",
+  odom_frame = "odom",
+  provide_odom_frame = false,
+  publish_frame_projected_to_2d = true,
+  use_pose_extrapolator = true,
+  use_odometry = true,
+  use_nav_sat = false,
+  use_landmarks = false,
+  num_laser_scans = 1,
+  num_multi_echo_laser_scans = 0,
+  num_subdivisions_per_laser_scan = 1,
+  num_point_clouds = 0,
+  lookup_transform_timeout_sec = 0.2,
+  submap_publish_period_sec = 0.3,
+  pose_publish_period_sec = 5e-3,
+  trajectory_publish_period_sec = 30e-3,
+}
+
+MAP_BUILDER.use_trajectory_builder_2d = true
+TRAJECTORY_BUILDER_2D.use_imu_data = false
+TRAJECTORY_BUILDER_2D.min_range = 0.5
+TRAJECTORY_BUILDER_2D.max_range = 50.0
+
+return options
+</file>
 
 <file path="csen934_project_pkg/config/slam_layout.rviz">
 Panels:
@@ -359,41 +395,13 @@ slam_toolbox:
     mode: mapping
     resolution: 0.1
     max_laser_range: 40.0
-    minimum_travel_distance: 0.3
-    minimum_travel_heading: 0.2
+    minimum_travel_distance: 0.05
+    minimum_travel_heading: 0.05
     do_loop_closing: true
     transform_timeout: 0.5        # <-- Add this
     tf_buffer_duration: 30.0      # <-- Add this
     minimum_time_interval: 0.2    # <-- Add this
     use_sim_time: false           # <-- Force system time to bypass Webots clock drift
-</file>
-
-<file path="frames_2026-11-14_00.08.43.gv">
-digraph G { "No tf data received" }
-</file>
-
-<file path="frames_2026-11-14_00.10.23.gv">
-digraph G {
-"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.658\nBuffer length: 5.018\nMost recent transform: 1794607823.617298\nOldest transform: 1794607818.598852\n"];
-"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.446\nBuffer length: 4.975\nMost recent transform: 1794607824.015565\nOldest transform: 1794607819.040129\n"];
-"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-edge [style=invis];
- subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1794607823.6227958"[ shape=plaintext ] ;
-}->"map";
-}
-</file>
-
-<file path="frames_2026-11-14_00.11.37.gv">
-digraph G {
-"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.676\nBuffer length: 5.028\nMost recent transform: 1794607897.704478\nOldest transform: 1794607892.676187\n"];
-"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.503\nBuffer length: 4.314\nMost recent transform: 1794607898.140439\nOldest transform: 1794607893.826056\n"];
-"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-edge [style=invis];
- subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1794607897.7100258"[ shape=plaintext ] ;
-}->"map";
-}
 </file>
 
 <file path="csen934_project_pkg/__init__.py">
@@ -1179,42 +1187,6 @@ def test_pep257():
     assert rc == 0, 'Found code style errors / warnings'
 </file>
 
-<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Define_Sensors.py">
-def init_sensors(driver, timestep):
-    """
-    Initializes and enables all required Webots sensors.
-    Returns a dictionary containing the sensor objects.
-    """
-    camera = driver.getDevice('front_camera')
-    if camera:
-        camera.enable(timestep)
-
-    gps = driver.getDevice('gps')
-    if gps:
-        gps.enable(timestep)
-
-    imu = driver.getDevice('imu')
-    if imu:
-        imu.enable(timestep)
-
-    gyro = driver.getDevice('gyro')
-    if gyro:
-        gyro.enable(timestep)
-        
-    lidar = driver.getDevice('lidar')
-    if lidar:
-        lidar.enable(timestep * 10)  # Throttled to ~10Hz
-        lidar.enablePointCloud()
-
-    return {
-        'camera': camera,
-        'gps': gps,
-        'imu': imu,
-        'gyro': gyro,
-        'lidar': lidar
-    }
-</file>
-
 <file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Helping_Functions.py">
 import math
 
@@ -1227,6 +1199,34 @@ def euler_to_quaternion(roll, pitch, yaw):
     qz = math.cos(roll/2) * math.cos(pitch/2) * math.sin(yaw/2) - math.sin(roll/2) * math.sin(pitch/2) * math.cos(yaw/2)
     qw = math.cos(roll/2) * math.cos(pitch/2) * math.cos(yaw/2) + math.sin(roll/2) * math.sin(pitch/2) * math.sin(yaw/2)
     return [qx, qy, qz, qw]
+</file>
+
+<file path="frames_2026-11-14_00.08.43.gv">
+digraph G { "No tf data received" }
+</file>
+
+<file path="frames_2026-11-14_00.10.23.gv">
+digraph G {
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.658\nBuffer length: 5.018\nMost recent transform: 1794607823.617298\nOldest transform: 1794607818.598852\n"];
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.446\nBuffer length: 4.975\nMost recent transform: 1794607824.015565\nOldest transform: 1794607819.040129\n"];
+"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1794607823.6227958"[ shape=plaintext ] ;
+}->"map";
+}
+</file>
+
+<file path="frames_2026-11-14_00.11.37.gv">
+digraph G {
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.676\nBuffer length: 5.028\nMost recent transform: 1794607897.704478\nOldest transform: 1794607892.676187\n"];
+"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.503\nBuffer length: 4.314\nMost recent transform: 1794607898.140439\nOldest transform: 1794607893.826056\n"];
+"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1794607897.7100258"[ shape=plaintext ] ;
+}->"map";
+}
 </file>
 
 <file path="README.md">
@@ -1391,6 +1391,55 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+</file>
+
+<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Define_Sensors.py">
+def init_sensors(driver, timestep):
+    """
+    Initializes and enables all required Webots sensors.
+    Returns a dictionary containing the sensor objects.
+    """
+    camera = driver.getDevice('front_camera')
+    if camera:
+        camera.enable(timestep)
+
+    gps = driver.getDevice('gps')
+    if gps:
+        gps.enable(timestep)
+
+    imu = driver.getDevice('imu')
+    if imu:
+        imu.enable(timestep)
+
+    gyro = driver.getDevice('gyro')
+    if gyro:
+        gyro.enable(timestep)
+        
+    lidar = driver.getDevice('lidar')
+    if lidar:
+        lidar.enable(timestep * 10)  # Throttled to ~10Hz
+        lidar.enablePointCloud()
+
+    return {
+        'camera': camera,
+        'gps': gps,
+        'imu': imu,
+        'gyro': gyro,
+        'lidar': lidar
+    }
+</file>
+
+<file path=".gitignore">
+__pycache__/
+*.pyc
+/build
+/install
+/log
+/.idea
+
+# Local environment / launcher
+.venv/
+run_sim.sh
 </file>
 
 <file path="Webots_Worlds_Controller/Worlds/city.wbt">
@@ -2020,7 +2069,7 @@ TeslaModel3 {
     Lidar {
       horizontalResolution 720
       fieldOfView 6.2832
-      verticalFieldOfView 0.52
+      verticalFieldOfView 0.03
       numberOfLayers 4
       minRange 0.5
       maxRange 50
@@ -2932,19 +2981,6 @@ Crossroad {
 }
 </file>
 
-<file path=".gitignore">
-__pycache__/
-*.pyc
-/build
-/install
-/log
-/.idea
-
-# Local environment / launcher
-.venv/
-run_sim.sh
-</file>
-
 <file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/CSEN934_Test_OL_Sensors.py">
 import math
 
@@ -3206,7 +3242,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'Webots_Worlds_Controller/Worlds'), glob('Webots_Worlds_Controller/Worlds/*.wbt')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('csen934_project_pkg/config/*.*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -3244,9 +3280,9 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     
-    slam_arg = DeclareLaunchArgument('slam', default_value='none',
-                                     description='toolbox | gmapping | none')
-
+    slam_arg = DeclareLaunchArgument('slam', default_value='toolbox',
+                                 description='toolbox | gmapping | none')
+                                 
     def slam_is(name):
         return IfCondition(PythonExpression(
             ["'", LaunchConfiguration('slam'), "' == '", name, "'"]))
@@ -3302,8 +3338,8 @@ def generate_launch_description():
         parameters=[{
             'target_frame': 'base_link', # Sliced relative to chassis
             'transform_tolerance': 0.2,
-            'min_height': 0.3,           # Ignore ground hits
-            'max_height': 2.0,           # Ignore roof
+            'min_height': -0.5,           # Ignore ground hits
+            'max_height': 3.0,           # Ignore roof
             'angle_min': -3.14159,
             'angle_max': 3.14159,
             'angle_increment': 0.0087,
@@ -3336,14 +3372,24 @@ def generate_launch_description():
     )
 
     gmapping_node = Node(
-        package='slam_gmapping', executable='slam_gmapping',
-        name='slam_gmapping', output='screen',
-        parameters=[{'base_frame': 'base_link', 'odom_frame': 'odom',
-                     'map_frame': 'map', 'map_update_interval': 2.0,
-                     'maxUrange': 40.0, 'delta': 0.1}],
-        remappings=[('scan', '/scan')],
-        condition=slam_is('gmapping')
-    )
+    package='slam_gmapping', executable='slam_gmapping',
+    name='slam_gmapping', output='screen',
+    parameters=[{
+        'use_sim_time': False,
+        'base_frame': 'base_link',
+        'odom_frame': 'odom',
+        'map_frame': 'map',
+        'map_update_interval': 1.0,
+        'maxUrange': 40.0,
+        'maxRange': 50.0,
+        'delta': 0.1,
+        'linearUpdate': 0.2,
+        'angularUpdate': 0.1,
+        'particles': 30,
+    }],
+    remappings=[('scan', '/scan')],
+    condition=slam_is('gmapping')
+)
 
     return LaunchDescription([
         slam_arg, ui_node, noise_node, ekf_node, rqt_graph_node, yaw_node,

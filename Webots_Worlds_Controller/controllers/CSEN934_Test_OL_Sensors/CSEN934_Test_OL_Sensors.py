@@ -129,7 +129,7 @@ while driver.step() != -1:
         # Publish ground-truth odometry
         odom_pub.publish(odom_msg)
         # Broadcast odom -> base_link
-        tf_broadcaster.sendTransform(t)
+        #tf_broadcaster.sendTransform(t)
         
         # SLAM DEBUG: Check robot odometry and TF
         if driver.getTime() - last_tf_debug_t >= 2.0:

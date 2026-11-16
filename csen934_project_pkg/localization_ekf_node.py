@@ -25,6 +25,9 @@ R is read from the measurement's covariance fields.
 """
 import math
 
+from geometry_msgs.msg import TransformStamped
+from tf2_ros import TransformBroadcaster
+
 from ackermann_msgs.msg import AckermannDrive
 from csen934_project_pkg.helping_functions import (
     euler_to_quaternion,
@@ -60,6 +63,7 @@ class LocalizationEKF(Node):
 
     def __init__(self):
         super().__init__('Localization_EKF_Node')
+        
 
         # Vehicle: TeslaModel3 PROTO (Webots R2025a) has wheelbase 2.94 m.
         self.wheelbase = self.declare_parameter('wheelbase', 2.94).value
@@ -88,6 +92,9 @@ class LocalizationEKF(Node):
         self.create_subscription(
             AckermannDrive, '/Car_Ackrm', self.control_callback, 10)
         self.pub = self.create_publisher(Odometry, '/Car_Odom_Filtered', 10)
+        
+        # Add the TF Broadcaster here
+        self.tf_broadcaster = TransformBroadcaster(self)
 
         self.get_logger().info(
             'EKF ready: wheelbase=%.2f m, steering_sign=%+.0f, tau=%.2f s' % (
@@ -243,6 +250,22 @@ class LocalizationEKF(Node):
         out.twist.covariance = [float(c) for c in twist_cov]
 
         self.pub.publish(out)
+        
+        t = TransformStamped()
+        t.header.stamp = meas.header.stamp
+        t.header.frame_id = 'odom'
+        t.child_frame_id = 'base_link'
+        
+        t.transform.translation.x = float(x)
+        t.transform.translation.y = float(y)
+        t.transform.translation.z = meas.pose.pose.position.z
+        
+        t.transform.rotation.x = qx
+        t.transform.rotation.y = qy
+        t.transform.rotation.z = qz
+        t.transform.rotation.w = qw
+        
+        self.tf_broadcaster.sendTransform(t)
 
 
 def main(args=None):

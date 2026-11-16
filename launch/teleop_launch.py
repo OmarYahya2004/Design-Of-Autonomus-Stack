@@ -101,14 +101,24 @@ def generate_launch_description():
     )
 
     gmapping_node = Node(
-        package='slam_gmapping', executable='slam_gmapping',
-        name='slam_gmapping', output='screen',
-        parameters=[{'base_frame': 'base_link', 'odom_frame': 'odom',
-                     'map_frame': 'map', 'map_update_interval': 2.0,
-                     'maxUrange': 40.0, 'delta': 0.1}],
-        remappings=[('scan', '/scan')],
-        condition=slam_is('gmapping')
-    )
+    package='slam_gmapping', executable='slam_gmapping',
+    name='slam_gmapping', output='screen',
+    parameters=[{
+        'use_sim_time': False,
+        'base_frame': 'base_link',
+        'odom_frame': 'odom',
+        'map_frame': 'map',
+        'map_update_interval': 1.0,
+        'maxUrange': 40.0,
+        'maxRange': 50.0,
+        'delta': 0.1,
+        'linearUpdate': 0.2,
+        'angularUpdate': 0.1,
+        'particles': 30,
+    }],
+    remappings=[('scan', '/scan')],
+    condition=slam_is('gmapping')
+)
 
     return LaunchDescription([
         slam_arg, ui_node, noise_node, ekf_node, rqt_graph_node, yaw_node,
