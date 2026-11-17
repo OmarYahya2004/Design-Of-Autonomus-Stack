@@ -58,15 +58,17 @@ def main(args=None):
     if not ready:
         return
 
-    # Ctrl+C (SIGINT) or launch shutdown (SIGTERM) -> close the plot windows too.
-    signal.signal(signal.SIGINT, signal.default_int_handler)
-    signal.signal(signal.SIGTERM, signal.default_int_handler)
+    # Ctrl+C (SIGINT), launch shutdown (SIGTERM) or closing the terminal
+    # (SIGHUP) -> close the plot windows too.
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, signal.default_int_handler)
 
     # rqt_plot with topic retry (see rqt_plot_retry.py). Started directly rather
     # than via `ros2 run`, which adds a wrapper process that would leave the real
     # window orphaned when stopped.
     plots = [
-        subprocess.Popen([sys.executable, '-m', 'csen934_project_pkg.rqt_plot_retry', *topics])
+        subprocess.Popen([sys.executable, '-m', 'csen934_project_pkg.rqt_plot_retry', *topics],
+                         preexec_fn=_die_with_parent)
         for topics in PLOTS.values()
     ]
     try:
@@ -78,7 +80,27 @@ def main(args=None):
         close_plots(plots)
 
 
+def _die_with_parent():
+    # Runs in the child before exec: have the kernel SIGKILL this plot window
+    # if this node dies without cleaning up (e.g. launch escalates to SIGKILL),
+    # so no orphaned windows survive into the next run. Linux only.
+    try:
+        import ctypes
+        PR_SET_PDEATHSIG = 1
+        ctypes.CDLL('libc.so.6', use_errno=True).prctl(PR_SET_PDEATHSIG, signal.SIGKILL)
+    except OSError:
+        pass
+
+
 def close_plots(plots, grace=3.0):
+    # Ctrl+C reaches this node twice (once from the terminal, once forwarded by
+    # ros2 launch), and launch later follows up with SIGTERM. A second signal
+    # raising KeyboardInterrupt in here would abort the cleanup and leave the
+    # rqt_plot windows running, so they pile up across runs. Ignore further
+    # signals while closing.
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, signal.SIG_IGN)
+
     # rqt_plot does not always exit on SIGINT, so escalate to SIGKILL.
     for p in plots:
         if p.poll() is None:
