@@ -13,4 +13,4 @@ slam_toolbox:
     transform_timeout: 0.5        # <-- Add this
     tf_buffer_duration: 30.0      # <-- Add this
     minimum_time_interval: 0.2    # <-- Add this
-    use_sim_time: false           # <-- Force system time to bypass Webots clock drift
+    use_sim_time: true           # <-- Force system time to bypass Webots clock drift (the sim_time works normally)

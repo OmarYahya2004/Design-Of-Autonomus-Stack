@@ -251,6 +251,7 @@ class LocalizationEKF(Node):
 
         self.pub.publish(out)
         
+        
         t = TransformStamped()
         t.header.stamp = meas.header.stamp
         t.header.frame_id = 'odom'
@@ -266,7 +267,7 @@ class LocalizationEKF(Node):
         t.transform.rotation.w = qw
         
         self.tf_broadcaster.sendTransform(t)
-
+        
 
 def main(args=None):
     rclpy.init(args=args)

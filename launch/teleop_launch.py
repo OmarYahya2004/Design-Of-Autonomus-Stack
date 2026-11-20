@@ -1,3 +1,8 @@
+"""
+1) Added the use_sim_time parameter to the noise node and the ekf node and it was set to true.
+2) Modified the use_sim_time in gmapping node to be set to true
+"""
+
 import os
 import launch
 from ament_index_python.packages import get_package_share_directory
@@ -27,14 +32,16 @@ def generate_launch_description():
         package='csen934_project_pkg',
         executable='localization_add_noise',
         name='Localization_Add_Noise_Node',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': True}] # Using the sim time
     )
     
     ekf_node = Node(
         package='csen934_project_pkg',
         executable='localization_ekf_node',
         name='Localization_EKF_Node',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': True}] # Using the sim time
     )
     
     rqt_graph_node = Node(
@@ -104,7 +111,7 @@ def generate_launch_description():
     package='slam_gmapping', executable='slam_gmapping',
     name='slam_gmapping', output='screen',
     parameters=[{
-        'use_sim_time': False,
+        'use_sim_time': True,
         'base_frame': 'base_link',
         'odom_frame': 'odom',
         'map_frame': 'map',

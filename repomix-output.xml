@@ -43,6 +43,9 @@ The content is organized as follows:
 csen934_project_pkg/
   config/
     cartographer.lua
+    lio_sam_params.yaml
+    lio_slam_layout.rviz
+    slam_layout_fixed.rviz
     slam_layout.rviz
     slam_toolbox.yaml
   __init__.py
@@ -54,6 +57,7 @@ csen934_project_pkg/
   rqt_plot_retry.py
   yaw_plot_publisher.py
 launch/
+  lio_sam_3d_launch.py
   teleop_launch.py
 resource/
   csen934_project_pkg
@@ -72,12 +76,6 @@ Webots_Worlds_Controller/
     .city.wbproj
     city.wbt
 .gitignore
-frames_2026-11-14_00.08.43.gv
-frames_2026-11-14_00.08.43.pdf
-frames_2026-11-14_00.10.23.gv
-frames_2026-11-14_00.10.23.pdf
-frames_2026-11-14_00.11.37.gv
-frames_2026-11-14_00.11.37.pdf
 package.xml
 README.md
 setup.cfg
@@ -86,6 +84,771 @@ setup.py
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="csen934_project_pkg/config/lio_sam_params.yaml">
+/**:
+  ros__parameters:
+    use_sim_time: true
+
+    # Topics
+    pointCloudTopic: "/lidar_points"                   # Point cloud data
+    imuTopic: "/imu/data"                        # IMU data
+    odomTopic: "odometry/imu"                    # IMU pre-preintegration odometry, same frequency as IMU
+    gpsTopic: "odometry/gpsz"                    # GPS odometry topic from navsat, see module_navsat.launch file
+
+    # Frames
+    lidarFrame: "lidar"
+    baselinkFrame: "base_link"
+    odometryFrame: "odom"
+    mapFrame: "map"
+
+    # GPS Settings
+    useImuHeadingInitialization: false           # if using GPS data, set to "true"
+    useGpsElevation: false                       # if GPS elevation is bad, set to "false"
+    gpsCovThreshold: 2.0                         # m^2, threshold for using GPS data
+    poseCovThreshold: 25.0                       # m^2, threshold for using GPS data
+
+    # Export settings
+    savePCD: false                               # https://github.com/TixiaoShan/LIO-SAM/issues/3
+    savePCDDirectory: "/Downloads/LOAM/"         # in your home folder, starts and ends with "/". Warning: the code deletes "LOAM" folder then recreates it. See "mapOptimization" for implementation
+
+    # Sensor Settings
+    sensor: velodyne                               # lidar sensor type, either 'velodyne', 'ouster' or 'livox'
+    N_SCAN: 16                                   # number of lidar channels (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)
+    Horizon_SCAN: 720                            # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)
+    downsampleRate: 1                            # default: 1. Downsample your data if too many
+    # points. i.e., 16 = 64 / 4, 16 = 16 / 1
+    lidarMinRange: 0.5                           # default: 1.0, minimum lidar range to be used
+    lidarMaxRange: 50.0                        # default: 1000.0, maximum lidar range to be used
+
+    # IMU Settings
+    imuAccNoise: 3.9939570888238808e-03
+    imuGyrNoise: 1.5636343949698187e-03
+    imuAccBiasN: 6.4356659353532566e-05
+    imuGyrBiasN: 3.5640318696367613e-05
+
+    imuGravity: 9.81
+    imuRPYWeight: 0.01
+    
+
+    extrinsicTrans:  [ 0.0,  0.0,  1.3 ]
+    extrinsicRot:    [1.0,  0.0,  0.0,
+                       0.0,  1.0,  0.0,
+                       0.0,  0.0, 1.0 ]
+    extrinsicRPY: [ 1.0,  0.0,  0.0,
+                   0.0,  1.0,  0.0,
+                    0.0,  0.0,  1.0 ]
+
+    # LOAM feature threshold
+    edgeThreshold: 0.2                            # Old value: 1.0 
+    surfThreshold: 0.1
+    edgeFeatureMinValidNum: 4
+    surfFeatureMinValidNum: 50                    # Old value: 100
+
+    # voxel filter paprams
+    odometrySurfLeafSize: 0.4                     # default: 0.4 - outdoor, 0.2 - indoor
+    mappingCornerLeafSize: 0.2                    # default: 0.2 - outdoor, 0.1 - indoor
+    mappingSurfLeafSize: 0.4                      # default: 0.4 - outdoor, 0.2 - indoor
+
+    # robot motion constraint (in case you are using a 2D robot)
+    z_tollerance: 0.2                             # old value: 1000.0 meters
+    rotation_tollerance: 0.1                   # old value: 1000.0 radians
+
+    # CPU Params
+    numberOfCores: 4                              # number of cores for mapping optimization
+    mappingProcessInterval: 0.15                  # seconds, regulate mapping frequency
+
+    # Surrounding map
+    surroundingkeyframeAddingDistThreshold: 1.0   # meters, regulate keyframe adding threshold
+    surroundingkeyframeAddingAngleThreshold: 0.2  # radians, regulate keyframe adding threshold
+    surroundingKeyframeDensity: 2.0               # meters, downsample surrounding keyframe poses   
+    surroundingKeyframeSearchRadius: 50.0         # meters, within n meters scan-to-map optimization
+    # (when loop closure disabled)
+
+    # Loop closure
+    loopClosureEnableFlag: true
+    loopClosureFrequency: 1.0                     # Hz, regulate loop closure constraint add frequency
+    surroundingKeyframeSize: 50                   # submap size (when loop closure enabled)
+    historyKeyframeSearchRadius: 15.0             # meters, key frame that is within n meters from
+    # current pose will be considerd for loop closure
+    historyKeyframeSearchTimeDiff: 30.0           # seconds, key frame that is n seconds older will be
+    # considered for loop closure
+    historyKeyframeSearchNum: 25                  # number of hostory key frames will be fused into a
+    # submap for loop closure
+    historyKeyframeFitnessScore: 0.3              # icp threshold, the smaller the better alignment
+
+    # Visualization
+    globalMapVisualizationSearchRadius: 1000.0    # meters, global map visualization radius
+    globalMapVisualizationPoseDensity: 10.0       # meters, global map visualization keyframe density
+    globalMapVisualizationLeafSize: 1.0           # meters, global map visualization cloud density
+</file>
+
+<file path="csen934_project_pkg/config/lio_slam_layout.rviz">
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /PointCloud21
+        - /TF1
+        - /Path1
+        - /MarkerArray1
+        - /PointCloud22
+        - /PointCloud22/Topic1
+      Splitter Ratio: 0.35384616255760193
+    Tree Height: 578
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Expanded:
+      - /2D Goal Pose1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 14.67530632019043
+        Min Value: -2.3365986347198486
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 92.95751190185547
+      Min Color: 0; 0; 0
+      Min Intensity: 5.530245304107666
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /lio_sam/mapping/map_global
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        base_link:
+          Value: true
+        chassis_link:
+          Value: true
+        imu_link:
+          Value: true
+        laser_sensor_frame:
+          Value: true
+        lidar:
+          Value: true
+        lidar_link:
+          Value: true
+        map:
+          Value: true
+        navsat_link:
+          Value: true
+        odom:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Tree:
+        map:
+          odom:
+            base_link:
+              chassis_link:
+                imu_link:
+                  laser_sensor_frame:
+                    {}
+                navsat_link:
+                  {}
+              lidar:
+                {}
+              lidar_link:
+                {}
+      Update Interval: 0
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 85; 255; 255
+      Enabled: true
+      Head Diameter: 0.30000001192092896
+      Head Length: 0.20000000298023224
+      Length: 0.30000001192092896
+      Line Style: Billboards
+      Line Width: 3
+      Name: Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 1.5
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /lio_sam/mapping/path
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: MarkerArray
+      Namespaces:
+        loop_edges: true
+        loop_nodes: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /lio_sam/mapping/loop_closure_constraints
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: ""
+      Decay Time: 0
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: ""
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: System Default
+        Value: /points
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /front_camera/image_raw
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.25
+      Covariance y: 0.25
+      Covariance yaw: 0.06853891909122467
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+      Single click: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 521.0084228515625
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.8047977685928345
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 2.675380229949951
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1016
+  Hide Left Dock: false
+  Hide Right Dock: false
+  Image:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000004000000000000020a0000039efc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000002cd000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000310000000cb0000002800ffffff000000010000010f0000039efc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d0000039e000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000004150000039e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1850
+  X: 70
+  Y: 27
+</file>
+
+<file path="csen934_project_pkg/config/slam_layout_fixed.rviz">
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+      Splitter Ratio: 0.5
+    Tree Height: 355
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Expanded:
+      - /2D Goal Pose1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz_common/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /Car_Odom_Filtered
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /Car_Odom_GT
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz_default_plugins/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 255; 25; 0
+        Head Length: 0.30000001192092896
+        Head Radius: 0.10000000149011612
+        Shaft Length: 1
+        Shaft Radius: 0.05000000074505806
+        Value: Arrow
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /Car_Odom_Noisy
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /front_camera/image_raw
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: ""
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: LaserScan
+      Position Transformer: ""
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /scan
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map_updates
+      Use Timestamp: false
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.25
+      Covariance y: 0.25
+      Covariance yaw: 0.06853891909122467
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+      Single click: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
+  Transformation:
+    Current:
+      Class: rviz_default_plugins/TF
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 380.481689453125
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 1.5547963380813599
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 0.0004063798114657402
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 846
+  Hide Left Dock: false
+  Hide Right Dock: false
+  Image:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd000000040000000000000156000002b0fc0200000009fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000001ee000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000231000000bc0000002800ffffff000000010000010f000002b0fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003d000002b0000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004b00000003efc0100000002fb0000000800540069006d00650100000000000004b0000002fb00fffffffb0000000800540069006d006501000000000000045000000000000000000000023f000002b000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1200
+  X: 70
+  Y: 60
+</file>
+
+<file path="launch/lio_sam_3d_launch.py">
+import os
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node
+
+
+def generate_launch_description():
+    lio_sam_share = get_package_share_directory('lio_sam')
+    pkg_share = get_package_share_directory('csen934_project_pkg')
+    
+    # Dynamically locates the YAML file on any machine
+    params_file = os.path.join(pkg_share, 'config', 'lio_sam_params.yaml')
+
+    # 1. Static TF: base_link -> lidar
+    static_tf_lidar = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='base_to_lidar_tf',
+        arguments=['0', '0', '1.3', '0', '0', '0', 'base_link', 'lidar'],
+        parameters=[{'use_sim_time': True}],
+    )
+
+    # 2. Include LIO-SAM's launch file with your custom params
+    lio_sam_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(lio_sam_share, 'launch', 'run.launch.py')
+        ),
+        launch_arguments={'params_file': params_file}.items(),
+    )
+
+    return LaunchDescription([
+        static_tf_lidar,
+        lio_sam_launch,
+    ])
+</file>
 
 <file path="csen934_project_pkg/config/cartographer.lua">
 include "map_builder.lua"
@@ -401,7 +1164,7 @@ slam_toolbox:
     transform_timeout: 0.5        # <-- Add this
     tf_buffer_duration: 30.0      # <-- Add this
     minimum_time_interval: 0.2    # <-- Add this
-    use_sim_time: false           # <-- Force system time to bypass Webots clock drift
+    use_sim_time: true           # <-- Force system time to bypass Webots clock drift (the sim_time works normally)
 </file>
 
 <file path="csen934_project_pkg/__init__.py">
@@ -571,370 +1334,6 @@ def main():
     ros_thread.start()
     
     build_ui(teleop_node)
-
-if __name__ == '__main__':
-    main()
-</file>
-
-<file path="csen934_project_pkg/localization_ekf_node.py">
-"""
-Extended Kalman Filter (EKF) Localization.
-
-Fuses the noisy odometry with the Ackermann control input to estimate the
-vehicle pose and speed.
-
-    Node:       Localization_EKF_Node
-    Subscribes: /Car_Odom_Noisy     (nav_msgs/msg/Odometry)          measurement
-                /Car_Ackrm          (ackermann_msgs/msg/AckermannDrive) control input
-    Publishes:  /Car_Odom_Filtered  (nav_msgs/msg/Odometry)
-
-State:   s = [x, y, yaw, v]   (v = signed forward speed of the rear axle)
-Control: u = [v_cmd, delta]   (commanded speed, front steering angle)
-
-Motion model (kinematic bicycle, reference point = rear-axle center, which is
-where the Webots Car origin and the GPS are):
-    x'   = x + v cos(yaw) dt
-    y'   = y + v sin(yaw) dt
-    yaw' = yaw + v tan(delta) / L dt
-    v'   = v + (v_cmd - v) / tau dt     (first-order lag toward the command)
-
-Measurement model (from /Car_Odom_Noisy):
-    z = [x, y, yaw, v, omega],  omega = v tan(delta) / L
-R is read from the measurement's covariance fields.
-"""
-import math
-
-from ackermann_msgs.msg import AckermannDrive
-from csen934_project_pkg.helping_functions import (
-    euler_to_quaternion,
-    normalize_angle,
-    quaternion_to_euler,
-)
-from nav_msgs.msg import Odometry
-import numpy as np
-import rclpy
-from rclpy.node import Node
-
-# Indices into the row-major 6x6 covariance arrays [x, y, z, rot_x, rot_y, rot_z].
-IDX_X = 0 * 6 + 0
-IDX_Y = 1 * 6 + 1
-IDX_YAW = 5 * 6 + 5
-IDX_XY = 0 * 6 + 1
-IDX_YX = 1 * 6 + 0
-IDX_XYAW = 0 * 6 + 5
-IDX_YAWX = 5 * 6 + 0
-IDX_YYAW = 1 * 6 + 5
-IDX_YAWY = 5 * 6 + 1
-
-# Used when a measurement reports zero variance (e.g. fed straight from GT),
-# so R stays invertible.
-MIN_VARIANCE = 1e-6
-
-# Gaps longer than this (s) mean the stream stopped; re-initialise from the
-# next measurement instead of predicting across the gap.
-MAX_DT = 1.0
-
-
-class LocalizationEKF(Node):
-
-    def __init__(self):
-        super().__init__('Localization_EKF_Node')
-
-        # Vehicle: TeslaModel3 PROTO (Webots R2025a) has wheelbase 2.94 m.
-        self.wheelbase = self.declare_parameter('wheelbase', 2.94).value
-        # Multiplies the incoming steering angle so that + = left in the model.
-        # /Car_Ackrm currently uses the Webots convention (+ = RIGHT turn, verified
-        # in city.wbt), the opposite of AckermannDrive, hence -1.0. Set to 1.0 if
-        # the controller and control.py are changed to the AckermannDrive convention.
-        self.steering_sign = self.declare_parameter('steering_sign', -1.0).value
-        # Time constant (s) of the speed response to a new speed command.
-        self.speed_tau = self.declare_parameter('speed_time_constant', 1.0).value
-
-        # Process noise (continuous-time std devs; scaled by dt).
-        self.q_pos = self.declare_parameter('process_std_position', 0.1).value
-        self.q_yaw = math.radians(
-            self.declare_parameter('process_std_yaw_deg', 1.0).value)
-        self.q_v = self.declare_parameter('process_std_speed', 1.0).value
-
-        self.s = None          # state [x, y, yaw, v]
-        self.P = None          # 4x4 covariance
-        self.last_stamp = None
-        self.v_cmd = None      # None until the first /Car_Ackrm arrives
-        self.delta = 0.0
-
-        self.create_subscription(
-            Odometry, '/Car_Odom_Noisy', self.measurement_callback, 10)
-        self.create_subscription(
-            AckermannDrive, '/Car_Ackrm', self.control_callback, 10)
-        self.pub = self.create_publisher(Odometry, '/Car_Odom_Filtered', 10)
-
-        self.get_logger().info(
-            'EKF ready: wheelbase=%.2f m, steering_sign=%+.0f, tau=%.2f s' % (
-                self.wheelbase, self.steering_sign, self.speed_tau))
-
-    # ------------------------------------------------------------------ input
-    def control_callback(self, msg: AckermannDrive):
-        self.v_cmd = float(msg.speed)
-        self.delta = self.steering_sign * float(msg.steering_angle)
-
-    def measurement_callback(self, msg: Odometry):
-        stamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
-        z, R = self.measurement_from_msg(msg)
-
-        if self.s is None or self.last_stamp is None:
-            self.initialize(z, R)
-        else:
-            dt = stamp - self.last_stamp
-            if dt <= 0.0:
-                # Out-of-order or duplicate stamp: correct without predicting.
-                pass
-            elif dt > MAX_DT:
-                self.get_logger().warn(
-                    'Measurement gap of %.2f s, re-initialising EKF' % dt)
-                self.initialize(z, R)
-                self.last_stamp = stamp
-                self.publish(msg)
-                return
-            else:
-                self.predict(dt)
-            self.update(z, R)
-
-        self.last_stamp = stamp
-        self.publish(msg)
-
-    # ------------------------------------------------------------- EKF steps
-    def initialize(self, z, R):
-        self.s = z[:4].copy()
-        self.P = np.diag(np.diag(R)[:4])
-
-    def predict(self, dt):
-        x, y, yaw, v = self.s
-        L = self.wheelbase
-        tan_d = math.tan(self.delta)
-        c, s = math.cos(yaw), math.sin(yaw)
-
-        # Without a speed command, model speed as constant (random walk).
-        if self.v_cmd is None:
-            dv, dv_dv = 0.0, 0.0
-        else:
-            dv = (self.v_cmd - v) / self.speed_tau
-            dv_dv = -1.0 / self.speed_tau
-
-        self.s = np.array([
-            x + v * c * dt,
-            y + v * s * dt,
-            normalize_angle(yaw + v * tan_d / L * dt),
-            v + dv * dt,
-        ])
-
-        F = np.array([
-            [1.0, 0.0, -v * s * dt, c * dt],
-            [0.0, 1.0, v * c * dt, s * dt],
-            [0.0, 0.0, 1.0, tan_d / L * dt],
-            [0.0, 0.0, 0.0, 1.0 + dv_dv * dt],
-        ])
-        Q = np.diag([
-            self.q_pos ** 2, self.q_pos ** 2, self.q_yaw ** 2, self.q_v ** 2,
-        ]) * dt
-
-        self.P = F @ self.P @ F.T + Q
-
-    def update(self, z, R):
-        x, y, yaw, v = self.s
-        k_w = math.tan(self.delta) / self.wheelbase   # omega = v * k_w
-
-        h = np.array([x, y, yaw, v, v * k_w])
-        H = np.array([
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-            [0.0, 0.0, 0.0, k_w],
-        ])
-
-        innovation = z - h
-        innovation[2] = normalize_angle(innovation[2])
-
-        S = H @ self.P @ H.T + R
-        K = self.P @ H.T @ np.linalg.inv(S)
-
-        self.s = self.s + K @ innovation
-        self.s[2] = normalize_angle(self.s[2])
-
-        # Joseph form keeps P symmetric and positive definite.
-        I_KH = np.eye(4) - K @ H
-        self.P = I_KH @ self.P @ I_KH.T + K @ R @ K.T
-
-    # --------------------------------------------------------------- helpers
-    @staticmethod
-    def measurement_from_msg(msg: Odometry):
-        q = msg.pose.pose.orientation
-        _, _, yaw = quaternion_to_euler(q.x, q.y, q.z, q.w)
-        z = np.array([
-            msg.pose.pose.position.x,
-            msg.pose.pose.position.y,
-            yaw,
-            msg.twist.twist.linear.x,
-            msg.twist.twist.angular.z,
-        ])
-        pc, tc = msg.pose.covariance, msg.twist.covariance
-        R = np.diag([
-            max(pc[IDX_X], MIN_VARIANCE),
-            max(pc[IDX_Y], MIN_VARIANCE),
-            max(pc[IDX_YAW], MIN_VARIANCE),
-            max(tc[IDX_X], MIN_VARIANCE),
-            max(tc[IDX_YAW], MIN_VARIANCE),
-        ])
-        return z, R
-
-    def publish(self, meas: Odometry):
-        x, y, yaw, v = self.s
-        out = Odometry()
-        out.header = meas.header
-        out.child_frame_id = meas.child_frame_id
-
-        out.pose.pose.position.x = float(x)
-        out.pose.pose.position.y = float(y)
-        out.pose.pose.position.z = meas.pose.pose.position.z
-        qx, qy, qz, qw = euler_to_quaternion(0.0, 0.0, float(yaw))
-        out.pose.pose.orientation.x = qx
-        out.pose.pose.orientation.y = qy
-        out.pose.pose.orientation.z = qz
-        out.pose.pose.orientation.w = qw
-
-        out.twist.twist.linear.x = float(v)
-        out.twist.twist.angular.z = float(v * math.tan(self.delta) / self.wheelbase)
-
-        P = self.P
-        pose_cov = [0.0] * 36
-        pose_cov[IDX_X] = P[0, 0]
-        pose_cov[IDX_Y] = P[1, 1]
-        pose_cov[IDX_YAW] = P[2, 2]
-        pose_cov[IDX_XY] = pose_cov[IDX_YX] = P[0, 1]
-        pose_cov[IDX_XYAW] = pose_cov[IDX_YAWX] = P[0, 2]
-        pose_cov[IDX_YYAW] = pose_cov[IDX_YAWY] = P[1, 2]
-        out.pose.covariance = [float(c) for c in pose_cov]
-
-        twist_cov = [0.0] * 36
-        twist_cov[IDX_X] = P[3, 3]
-        k_w = math.tan(self.delta) / self.wheelbase
-        twist_cov[IDX_YAW] = k_w ** 2 * P[3, 3]
-        out.twist.covariance = [float(c) for c in twist_cov]
-
-        self.pub.publish(out)
-
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = LocalizationEKF()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
-
-
-if __name__ == '__main__':
-    main()
-</file>
-
-<file path="csen934_project_pkg/localization_plots.py">
-"""
-Open three rqt_plot windows (x, y, yaw) comparing GT vs Noisy vs Filtered.
-
-rqt_plot silently drops any topic it cannot resolve when it starts and never
-retries, so launching it together with Webots gives empty plots. This waits
-until every plotted topic is being published, then starts one rqt_plot (with
-topic retry, see rqt_plot_retry.py) per quantity and stays alive until they
-are closed.
-"""
-import signal
-import subprocess
-import sys
-import time
-
-import rclpy
-
-SOURCES = ['Filtered', 'Noisy', 'GT']   # GT added last so it is drawn on top
-PLOTS = {
-    'x': ['/Car_Odom_%s/pose/pose/position/x' % s for s in SOURCES],
-    'y': ['/Car_Odom_%s/pose/pose/position/y' % s for s in SOURCES],
-    'yaw': ['/Car_Yaw_%s/data' % s for s in SOURCES],
-}
-REQUIRED_TOPICS = ['/Car_Odom_%s' % s for s in SOURCES] + ['/Car_Yaw_%s' % s for s in SOURCES]
-POLL_PERIOD = 0.5     # s
-REPORT_PERIOD = 10.0  # s
-
-
-def wait_for_topics(node):
-    last_report = time.monotonic()
-    while rclpy.ok():
-        published = {
-            name for name, _ in node.get_topic_names_and_types()
-            if node.count_publishers(name) > 0
-        }
-        missing = [t for t in REQUIRED_TOPICS if t not in published]
-        if not missing:
-            return True
-        if time.monotonic() - last_report > REPORT_PERIOD:
-            node.get_logger().info('Waiting for topics: %s' % ', '.join(missing))
-            last_report = time.monotonic()
-        rclpy.spin_once(node, timeout_sec=POLL_PERIOD)
-    return False
-
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = rclpy.create_node('Localization_Plots_Node')
-    node.get_logger().info('Waiting for odometry topics before opening rqt_plot...')
-    try:
-        ready = wait_for_topics(node)
-    except KeyboardInterrupt:
-        ready = False
-    if ready:
-        node.get_logger().info('Topics found, opening x / y / yaw plots')
-    node.destroy_node()
-    if rclpy.ok():
-        rclpy.shutdown()
-    if not ready:
-        return
-
-    # Ctrl+C (SIGINT) or launch shutdown (SIGTERM) -> close the plot windows too.
-    signal.signal(signal.SIGINT, signal.default_int_handler)
-    signal.signal(signal.SIGTERM, signal.default_int_handler)
-
-    # rqt_plot with topic retry (see rqt_plot_retry.py). Started directly rather
-    # than via `ros2 run`, which adds a wrapper process that would leave the real
-    # window orphaned when stopped.
-    plots = [
-        subprocess.Popen([sys.executable, '-m', 'csen934_project_pkg.rqt_plot_retry', *topics])
-        for topics in PLOTS.values()
-    ]
-    try:
-        while any(p.poll() is None for p in plots):
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        close_plots(plots)
-
-
-def close_plots(plots, grace=3.0):
-    # rqt_plot does not always exit on SIGINT, so escalate to SIGKILL.
-    for p in plots:
-        if p.poll() is None:
-            p.send_signal(signal.SIGINT)
-    deadline = time.monotonic() + grace
-    for p in plots:
-        try:
-            p.wait(timeout=max(0.0, deadline - time.monotonic()))
-        except subprocess.TimeoutExpired:
-            p.kill()
-            p.wait()
-
 
 if __name__ == '__main__':
     main()
@@ -1201,34 +1600,6 @@ def euler_to_quaternion(roll, pitch, yaw):
     return [qx, qy, qz, qw]
 </file>
 
-<file path="frames_2026-11-14_00.08.43.gv">
-digraph G { "No tf data received" }
-</file>
-
-<file path="frames_2026-11-14_00.10.23.gv">
-digraph G {
-"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.658\nBuffer length: 5.018\nMost recent transform: 1794607823.617298\nOldest transform: 1794607818.598852\n"];
-"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.446\nBuffer length: 4.975\nMost recent transform: 1794607824.015565\nOldest transform: 1794607819.040129\n"];
-"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-edge [style=invis];
- subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1794607823.6227958"[ shape=plaintext ] ;
-}->"map";
-}
-</file>
-
-<file path="frames_2026-11-14_00.11.37.gv">
-digraph G {
-"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 92.676\nBuffer length: 5.028\nMost recent transform: 1794607897.704478\nOldest transform: 1794607892.676187\n"];
-"map" -> "odom"[label=" Broadcaster: default_authority\nAverage rate: 9.503\nBuffer length: 4.314\nMost recent transform: 1794607898.140439\nOldest transform: 1794607893.826056\n"];
-"base_link" -> "lidar"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
-edge [style=invis];
- subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1794607897.7100258"[ shape=plaintext ] ;
-}->"map";
-}
-</file>
-
 <file path="README.md">
 # Design-Of-Autonomus-Stack
 </file>
@@ -1393,6 +1764,416 @@ if __name__ == '__main__':
     main()
 </file>
 
+<file path="csen934_project_pkg/localization_ekf_node.py">
+"""
+Extended Kalman Filter (EKF) Localization.
+
+Fuses the noisy odometry with the Ackermann control input to estimate the
+vehicle pose and speed.
+
+    Node:       Localization_EKF_Node
+    Subscribes: /Car_Odom_Noisy     (nav_msgs/msg/Odometry)          measurement
+                /Car_Ackrm          (ackermann_msgs/msg/AckermannDrive) control input
+    Publishes:  /Car_Odom_Filtered  (nav_msgs/msg/Odometry)
+
+State:   s = [x, y, yaw, v]   (v = signed forward speed of the rear axle)
+Control: u = [v_cmd, delta]   (commanded speed, front steering angle)
+
+Motion model (kinematic bicycle, reference point = rear-axle center, which is
+where the Webots Car origin and the GPS are):
+    x'   = x + v cos(yaw) dt
+    y'   = y + v sin(yaw) dt
+    yaw' = yaw + v tan(delta) / L dt
+    v'   = v + (v_cmd - v) / tau dt     (first-order lag toward the command)
+
+Measurement model (from /Car_Odom_Noisy):
+    z = [x, y, yaw, v, omega],  omega = v tan(delta) / L
+R is read from the measurement's covariance fields.
+"""
+import math
+
+from geometry_msgs.msg import TransformStamped
+from tf2_ros import TransformBroadcaster
+
+from ackermann_msgs.msg import AckermannDrive
+from csen934_project_pkg.helping_functions import (
+    euler_to_quaternion,
+    normalize_angle,
+    quaternion_to_euler,
+)
+from nav_msgs.msg import Odometry
+import numpy as np
+import rclpy
+from rclpy.node import Node
+
+# Indices into the row-major 6x6 covariance arrays [x, y, z, rot_x, rot_y, rot_z].
+IDX_X = 0 * 6 + 0
+IDX_Y = 1 * 6 + 1
+IDX_YAW = 5 * 6 + 5
+IDX_XY = 0 * 6 + 1
+IDX_YX = 1 * 6 + 0
+IDX_XYAW = 0 * 6 + 5
+IDX_YAWX = 5 * 6 + 0
+IDX_YYAW = 1 * 6 + 5
+IDX_YAWY = 5 * 6 + 1
+
+# Used when a measurement reports zero variance (e.g. fed straight from GT),
+# so R stays invertible.
+MIN_VARIANCE = 1e-6
+
+# Gaps longer than this (s) mean the stream stopped; re-initialise from the
+# next measurement instead of predicting across the gap.
+MAX_DT = 1.0
+
+
+class LocalizationEKF(Node):
+
+    def __init__(self):
+        super().__init__('Localization_EKF_Node')
+        
+
+        # Vehicle: TeslaModel3 PROTO (Webots R2025a) has wheelbase 2.94 m.
+        self.wheelbase = self.declare_parameter('wheelbase', 2.94).value
+        # Multiplies the incoming steering angle so that + = left in the model.
+        # /Car_Ackrm currently uses the Webots convention (+ = RIGHT turn, verified
+        # in city.wbt), the opposite of AckermannDrive, hence -1.0. Set to 1.0 if
+        # the controller and control.py are changed to the AckermannDrive convention.
+        self.steering_sign = self.declare_parameter('steering_sign', -1.0).value
+        # Time constant (s) of the speed response to a new speed command.
+        self.speed_tau = self.declare_parameter('speed_time_constant', 1.0).value
+
+        # Process noise (continuous-time std devs; scaled by dt).
+        self.q_pos = self.declare_parameter('process_std_position', 0.1).value
+        self.q_yaw = math.radians(
+            self.declare_parameter('process_std_yaw_deg', 1.0).value)
+        self.q_v = self.declare_parameter('process_std_speed', 1.0).value
+
+        self.s = None          # state [x, y, yaw, v]
+        self.P = None          # 4x4 covariance
+        self.last_stamp = None
+        self.v_cmd = None      # None until the first /Car_Ackrm arrives
+        self.delta = 0.0
+
+        self.create_subscription(
+            Odometry, '/Car_Odom_Noisy', self.measurement_callback, 10)
+        self.create_subscription(
+            AckermannDrive, '/Car_Ackrm', self.control_callback, 10)
+        self.pub = self.create_publisher(Odometry, '/Car_Odom_Filtered', 10)
+        
+        # Add the TF Broadcaster here
+        self.tf_broadcaster = TransformBroadcaster(self)
+
+        self.get_logger().info(
+            'EKF ready: wheelbase=%.2f m, steering_sign=%+.0f, tau=%.2f s' % (
+                self.wheelbase, self.steering_sign, self.speed_tau))
+
+    # ------------------------------------------------------------------ input
+    def control_callback(self, msg: AckermannDrive):
+        self.v_cmd = float(msg.speed)
+        self.delta = self.steering_sign * float(msg.steering_angle)
+
+    def measurement_callback(self, msg: Odometry):
+        stamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+        z, R = self.measurement_from_msg(msg)
+
+        if self.s is None or self.last_stamp is None:
+            self.initialize(z, R)
+        else:
+            dt = stamp - self.last_stamp
+            if dt <= 0.0:
+                # Out-of-order or duplicate stamp: correct without predicting.
+                pass
+            elif dt > MAX_DT:
+                self.get_logger().warn(
+                    'Measurement gap of %.2f s, re-initialising EKF' % dt)
+                self.initialize(z, R)
+                self.last_stamp = stamp
+                self.publish(msg)
+                return
+            else:
+                self.predict(dt)
+            self.update(z, R)
+
+        self.last_stamp = stamp
+        self.publish(msg)
+
+    # ------------------------------------------------------------- EKF steps
+    def initialize(self, z, R):
+        self.s = z[:4].copy()
+        self.P = np.diag(np.diag(R)[:4])
+
+    def predict(self, dt):
+        x, y, yaw, v = self.s
+        L = self.wheelbase
+        tan_d = math.tan(self.delta)
+        c, s = math.cos(yaw), math.sin(yaw)
+
+        # Without a speed command, model speed as constant (random walk).
+        if self.v_cmd is None:
+            dv, dv_dv = 0.0, 0.0
+        else:
+            dv = (self.v_cmd - v) / self.speed_tau
+            dv_dv = -1.0 / self.speed_tau
+
+        self.s = np.array([
+            x + v * c * dt,
+            y + v * s * dt,
+            normalize_angle(yaw + v * tan_d / L * dt),
+            v + dv * dt,
+        ])
+
+        F = np.array([
+            [1.0, 0.0, -v * s * dt, c * dt],
+            [0.0, 1.0, v * c * dt, s * dt],
+            [0.0, 0.0, 1.0, tan_d / L * dt],
+            [0.0, 0.0, 0.0, 1.0 + dv_dv * dt],
+        ])
+        Q = np.diag([
+            self.q_pos ** 2, self.q_pos ** 2, self.q_yaw ** 2, self.q_v ** 2,
+        ]) * dt
+
+        self.P = F @ self.P @ F.T + Q
+
+    def update(self, z, R):
+        x, y, yaw, v = self.s
+        k_w = math.tan(self.delta) / self.wheelbase   # omega = v * k_w
+
+        h = np.array([x, y, yaw, v, v * k_w])
+        H = np.array([
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [0.0, 0.0, 0.0, k_w],
+        ])
+
+        innovation = z - h
+        innovation[2] = normalize_angle(innovation[2])
+
+        S = H @ self.P @ H.T + R
+        K = self.P @ H.T @ np.linalg.inv(S)
+
+        self.s = self.s + K @ innovation
+        self.s[2] = normalize_angle(self.s[2])
+
+        # Joseph form keeps P symmetric and positive definite.
+        I_KH = np.eye(4) - K @ H
+        self.P = I_KH @ self.P @ I_KH.T + K @ R @ K.T
+
+    # --------------------------------------------------------------- helpers
+    @staticmethod
+    def measurement_from_msg(msg: Odometry):
+        q = msg.pose.pose.orientation
+        _, _, yaw = quaternion_to_euler(q.x, q.y, q.z, q.w)
+        z = np.array([
+            msg.pose.pose.position.x,
+            msg.pose.pose.position.y,
+            yaw,
+            msg.twist.twist.linear.x,
+            msg.twist.twist.angular.z,
+        ])
+        pc, tc = msg.pose.covariance, msg.twist.covariance
+        R = np.diag([
+            max(pc[IDX_X], MIN_VARIANCE),
+            max(pc[IDX_Y], MIN_VARIANCE),
+            max(pc[IDX_YAW], MIN_VARIANCE),
+            max(tc[IDX_X], MIN_VARIANCE),
+            max(tc[IDX_YAW], MIN_VARIANCE),
+        ])
+        return z, R
+
+    def publish(self, meas: Odometry):
+        x, y, yaw, v = self.s
+        out = Odometry()
+        out.header = meas.header
+        out.child_frame_id = meas.child_frame_id
+
+        out.pose.pose.position.x = float(x)
+        out.pose.pose.position.y = float(y)
+        out.pose.pose.position.z = meas.pose.pose.position.z
+        qx, qy, qz, qw = euler_to_quaternion(0.0, 0.0, float(yaw))
+        out.pose.pose.orientation.x = qx
+        out.pose.pose.orientation.y = qy
+        out.pose.pose.orientation.z = qz
+        out.pose.pose.orientation.w = qw
+
+        out.twist.twist.linear.x = float(v)
+        out.twist.twist.angular.z = float(v * math.tan(self.delta) / self.wheelbase)
+
+        P = self.P
+        pose_cov = [0.0] * 36
+        pose_cov[IDX_X] = P[0, 0]
+        pose_cov[IDX_Y] = P[1, 1]
+        pose_cov[IDX_YAW] = P[2, 2]
+        pose_cov[IDX_XY] = pose_cov[IDX_YX] = P[0, 1]
+        pose_cov[IDX_XYAW] = pose_cov[IDX_YAWX] = P[0, 2]
+        pose_cov[IDX_YYAW] = pose_cov[IDX_YAWY] = P[1, 2]
+        out.pose.covariance = [float(c) for c in pose_cov]
+
+        twist_cov = [0.0] * 36
+        twist_cov[IDX_X] = P[3, 3]
+        k_w = math.tan(self.delta) / self.wheelbase
+        twist_cov[IDX_YAW] = k_w ** 2 * P[3, 3]
+        out.twist.covariance = [float(c) for c in twist_cov]
+
+        self.pub.publish(out)
+        
+        
+        t = TransformStamped()
+        t.header.stamp = meas.header.stamp
+        t.header.frame_id = 'odom'
+        t.child_frame_id = 'base_link'
+        
+        t.transform.translation.x = float(x)
+        t.transform.translation.y = float(y)
+        t.transform.translation.z = meas.pose.pose.position.z
+        
+        t.transform.rotation.x = qx
+        t.transform.rotation.y = qy
+        t.transform.rotation.z = qz
+        t.transform.rotation.w = qw
+        
+        self.tf_broadcaster.sendTransform(t)
+        
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = LocalizationEKF()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
+<file path="csen934_project_pkg/localization_plots.py">
+"""
+Open three rqt_plot windows (x, y, yaw) comparing GT vs Noisy vs Filtered.
+
+rqt_plot silently drops any topic it cannot resolve when it starts and never
+retries, so launching it together with Webots gives empty plots. This waits
+until every plotted topic is being published, then starts one rqt_plot (with
+topic retry, see rqt_plot_retry.py) per quantity and stays alive until they
+are closed.
+"""
+import signal
+import subprocess
+import sys
+import time
+
+import rclpy
+
+SOURCES = ['Filtered', 'Noisy', 'GT']   # GT added last so it is drawn on top
+PLOTS = {
+    'x': ['/Car_Odom_%s/pose/pose/position/x' % s for s in SOURCES],
+    'y': ['/Car_Odom_%s/pose/pose/position/y' % s for s in SOURCES],
+    'yaw': ['/Car_Yaw_%s/data' % s for s in SOURCES],
+}
+REQUIRED_TOPICS = ['/Car_Odom_%s' % s for s in SOURCES] + ['/Car_Yaw_%s' % s for s in SOURCES]
+POLL_PERIOD = 0.5     # s
+REPORT_PERIOD = 10.0  # s
+
+
+def wait_for_topics(node):
+    last_report = time.monotonic()
+    while rclpy.ok():
+        published = {
+            name for name, _ in node.get_topic_names_and_types()
+            if node.count_publishers(name) > 0
+        }
+        missing = [t for t in REQUIRED_TOPICS if t not in published]
+        if not missing:
+            return True
+        if time.monotonic() - last_report > REPORT_PERIOD:
+            node.get_logger().info('Waiting for topics: %s' % ', '.join(missing))
+            last_report = time.monotonic()
+        rclpy.spin_once(node, timeout_sec=POLL_PERIOD)
+    return False
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = rclpy.create_node('Localization_Plots_Node')
+    node.get_logger().info('Waiting for odometry topics before opening rqt_plot...')
+    try:
+        ready = wait_for_topics(node)
+    except KeyboardInterrupt:
+        ready = False
+    if ready:
+        node.get_logger().info('Topics found, opening x / y / yaw plots')
+    node.destroy_node()
+    if rclpy.ok():
+        rclpy.shutdown()
+    if not ready:
+        return
+
+    # Ctrl+C (SIGINT), launch shutdown (SIGTERM) or closing the terminal
+    # (SIGHUP) -> close the plot windows too.
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, signal.default_int_handler)
+
+    # rqt_plot with topic retry (see rqt_plot_retry.py). Started directly rather
+    # than via `ros2 run`, which adds a wrapper process that would leave the real
+    # window orphaned when stopped.
+    plots = [
+        subprocess.Popen([sys.executable, '-m', 'csen934_project_pkg.rqt_plot_retry', *topics],
+                         preexec_fn=_die_with_parent)
+        for topics in PLOTS.values()
+    ]
+    try:
+        while any(p.poll() is None for p in plots):
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        close_plots(plots)
+
+
+def _die_with_parent():
+    # Runs in the child before exec: have the kernel SIGKILL this plot window
+    # if this node dies without cleaning up (e.g. launch escalates to SIGKILL),
+    # so no orphaned windows survive into the next run. Linux only.
+    try:
+        import ctypes
+        PR_SET_PDEATHSIG = 1
+        ctypes.CDLL('libc.so.6', use_errno=True).prctl(PR_SET_PDEATHSIG, signal.SIGKILL)
+    except OSError:
+        pass
+
+
+def close_plots(plots, grace=3.0):
+    # Ctrl+C reaches this node twice (once from the terminal, once forwarded by
+    # ros2 launch), and launch later follows up with SIGTERM. A second signal
+    # raising KeyboardInterrupt in here would abort the cleanup and leave the
+    # rqt_plot windows running, so they pile up across runs. Ignore further
+    # signals while closing.
+    for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(sig, signal.SIG_IGN)
+
+    # rqt_plot does not always exit on SIGINT, so escalate to SIGKILL.
+    for p in plots:
+        if p.poll() is None:
+            p.send_signal(signal.SIGINT)
+    deadline = time.monotonic() + grace
+    for p in plots:
+        try:
+            p.wait(timeout=max(0.0, deadline - time.monotonic()))
+        except subprocess.TimeoutExpired:
+            p.kill()
+            p.wait()
+
+
+if __name__ == '__main__':
+    main()
+</file>
+
 <file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/Define_Sensors.py">
 def init_sensors(driver, timestep):
     """
@@ -1419,27 +2200,19 @@ def init_sensors(driver, timestep):
     if lidar:
         lidar.enable(timestep * 10)  # Throttled to ~10Hz
         lidar.enablePointCloud()
+        
+    accelerometer = driver.getDevice('accelerometer')
+    if accelerometer:
+        accelerometer.enable(timestep)
 
     return {
         'camera': camera,
         'gps': gps,
         'imu': imu,
         'gyro': gyro,
+        'accelerometer': accelerometer,
         'lidar': lidar
     }
-</file>
-
-<file path=".gitignore">
-__pycache__/
-*.pyc
-/build
-/install
-/log
-/.idea
-
-# Local environment / launcher
-.venv/
-run_sim.sh
 </file>
 
 <file path="Webots_Worlds_Controller/Worlds/city.wbt">
@@ -1562,8 +2335,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.04686201783167759 0.001634365453820676 0.9989000351057692 3.0808871061087877
-  position -36.39495265138715 45.889063100200865 2.39853570206887
+  orientation -0.7222998211735976 0.015290149553699358 0.6914110063191174 3.1128823443042495
+  position -15.823902213480203 33.418889393142386 507.4622798510716
   near 1
   follow "tesla_vehicle"
   followType "Mounted Shot"
@@ -2043,18 +2816,18 @@ CurvedRoadSegment {
   curvatureRadius 40.5
 }
 TeslaModel3 {
-  hidden position_0_0 -2.170671713476719e-06
-  hidden position2_0_0 0.0007157404718868116
-  hidden position_0_1 2.170665121642063e-06
-  hidden position2_0_1 0.0007157405264007213
-  hidden position_0_2 -6.818690553496589e-05
-  hidden position_0_3 -6.818675478470482e-05
-  hidden rotation_1 0.9999998075703347 -0.0004370659821888638 0.000440264262452913 1.5707961930971168
-  hidden rotation_2 0.9999998075703199 0.00043706600385576684 -0.0004402642746260795 1.5707961930971301
-  hidden rotation_3 0.9999999974024495 5.0966177725587386e-05 -5.096616107010333e-05 1.5707960025975498
-  hidden rotation_4 0.9999999974024608 -5.096606686016792e-05 5.0966050204720074e-05 1.5707960025975392
-  translation -44.99918842345925 45.899998706776564 0.27300987554338996
-  rotation 0.003517312874811407 -2.803468638401966e-06 0.9999938142320087 3.140000009772625
+  hidden position_0_0 -1.008408562083956e-06
+  hidden position2_0_0 1293.576136842547
+  hidden position_0_1 1.0093491833572184e-06
+  hidden position2_0_1 1322.4247422351905
+  hidden position_0_2 1295.6639467917096
+  hidden position_0_3 1320.4504858278704
+  hidden rotation_1 0.8707362366426128 0.3477209500223953 -0.34771906348801596 1.7087723056140602
+  hidden rotation_2 0.06566765429709161 0.7055805749970422 -0.7055804783056012 3.010445572640295
+  hidden rotation_3 0.6705426364885899 -0.5245820967731738 0.5245819253424496 1.9602300129789763
+  hidden rotation_4 0.7978034510950913 0.4263272054501461 -0.42632706612861376 1.794792040372812
+  translation -33.037780185679004 40.22375882774441 0.27410125968882787
+  rotation -0.0031544721835748283 3.620342632833069e-05 -0.999995023984897 -3.118848640948779
   name "tesla_vehicle"
   controller "CSEN934_Test_OL_Sensors"
   sensorsSlotFront [
@@ -2069,8 +2842,8 @@ TeslaModel3 {
     Lidar {
       horizontalResolution 720
       fieldOfView 6.2832
-      verticalFieldOfView 0.03
-      numberOfLayers 4
+      verticalFieldOfView 0.52
+      numberOfLayers 16
       minRange 0.5
       maxRange 50
     }
@@ -2078,6 +2851,8 @@ TeslaModel3 {
   sensorsSlotCenter [
     Group {
       children [
+        Accelerometer {
+        }
         Gyro {
         }
         InertialUnit {
@@ -2094,7 +2869,7 @@ GenericTrafficLight {
   startGreen FALSE
   greenTime 10
   redTime 10
-  state "green"
+  state "red"
 }
 CrossRoadsTrafficLight {
   translation 45 -45 0
@@ -2549,7 +3324,7 @@ SpeedLimitSign {
 }
 TrafficCone {
   translation -50.81735518427135 33.90679997858879 -0.004076718672611251
-  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  rotation -0.0002731636563618583 0.9999998490525935 0.00047673515371738566 0.01369079276101292
   physics Physics {
     density -1
     mass 1
@@ -2557,7 +3332,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -53.34475518427135 33.90679997858879 -0.004076718672611251
-  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  rotation -0.0002731636563618583 0.9999998490525935 0.00047673515371738566 0.01369079276101292
   name "traffic cone(1)"
   physics Physics {
     density -1
@@ -2566,7 +3341,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -48.16815518427135 34.0094999785888 -0.004076718672611251
-  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  rotation -0.0002731636563618799 0.9999998490525935 0.00047673515371736907 0.01369079276101292
   name "traffic cone(2)"
   physics Physics {
     density -1
@@ -2575,7 +3350,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.10425447644976 26.35434520634681 -0.004076718672611251
-  rotation -0.00021751184277000248 0.9999707008526226 -0.0076518053368536286 0.013691192027821875
+  rotation -0.00021751184276274895 0.9999707008526225 -0.007651805336853666 0.013691192027821873
   name "traffic cone(3)"
   physics Physics {
     density -1
@@ -2584,7 +3359,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.56035447644975 33.90824520634682 -0.004076718672611251
-  rotation -0.00021751184276978136 0.9999707008526225 -0.007651805336847625 0.013691192027821876
+  rotation -0.00021751184276284642 0.9999707008526227 -0.0076518053368476524 0.013691192027821876
   name "traffic cone(4)"
   physics Physics {
     density -1
@@ -2593,7 +3368,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.095255184271345 16.183199978588757 -0.004076718672611251
-  rotation -0.0002731636563667695 0.9999998490525938 0.00047673515365073856 0.013690792761012921
+  rotation -0.0002731636563605534 0.9999998490525936 0.0004767351536508471 0.013690792761012914
   name "traffic cone(5)"
   physics Physics {
     density -1
@@ -2602,7 +3377,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -45.29575518427134 5.310339978588779 -0.004076718672611251
-  rotation -0.00027316365636744796 0.9999998490525936 0.0004767351536546437 0.01369079276101292
+  rotation -0.00027316365636150826 0.9999998490525936 0.00047673515365482085 0.013690792761012918
   name "traffic cone(6)"
   physics Physics {
     density -1
@@ -2611,7 +3386,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -44.782155184271346 -7.339150021411221 -0.004076718672611251
-  rotation -0.00027316365636744796 0.9999998490525936 0.0004767351536546437 0.01369079276101292
+  rotation -0.00027316365636150826 0.9999998490525936 0.00047673515365482085 0.013690792761012918
   name "traffic cone(7)"
   physics Physics {
     density -1
@@ -2620,7 +3395,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.974044815728654 -53.76080002141121 -0.004076718672611251
-  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  rotation -0.0002731636563618799 0.9999998490525935 0.00047673515371736907 0.01369079276101292
   name "traffic cone(8)"
   physics Physics {
     density -1
@@ -2629,7 +3404,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.96964481572866 -51.435000021411206 -0.004076718672611251
-  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  rotation -0.0002731636563618799 0.9999998490525935 0.00047673515371736907 0.01369079276101292
   name "traffic cone(9)"
   physics Physics {
     density -1
@@ -2638,7 +3413,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.953544815728655 -48.9544000214112 -0.004076718672611251
-  rotation -0.0002731636563677988 0.9999998490525935 0.00047673515371725653 0.01369079276101292
+  rotation -0.0002731636563618583 0.9999998490525935 0.00047673515371738566 0.01369079276101292
   name "traffic cone(10)"
   physics Physics {
     density -1
@@ -2647,7 +3422,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 33.71714481572865 -45.7234000214112 -0.004076718672611251
-  rotation -0.00027316365636774454 0.9999998490525936 0.0004767351537172458 0.01369079276101292
+  rotation -0.0002731636563618799 0.9999998490525935 0.00047673515371736907 0.01369079276101292
   name "traffic cone(11)"
   physics Physics {
     density -1
@@ -2656,7 +3431,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -35.360855184271344 -30.23390002141124 -0.004076718672611251
-  rotation -0.0002731636563669238 0.9999998490525936 0.00047673515365071807 0.01369079276101292
+  rotation -0.0002731636563606892 0.9999998490525936 0.00047673515365078735 0.013690792761012914
   name "traffic cone(12)"
   physics Physics {
     density -1
@@ -2665,7 +3440,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -42.324755184271346 -18.608400021411242 -0.004076718672611251
-  rotation -0.0002731636563670776 0.9999998490525936 0.0004767351536507187 0.01369079276101292
+  rotation -0.00027316365636083595 0.9999998490525936 0.0004767351536507963 0.013690792761012918
   name "traffic cone(13)"
   physics Physics {
     density -1
@@ -2674,7 +3449,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -26.685755184271322 -38.237200021411205 -0.004076718672611251
-  rotation -0.00027316365636812087 0.9999998490525936 0.00047673515371997923 0.01369079276101292
+  rotation -0.00027316365636332885 0.9999998490525936 0.0004767351537199611 0.013690792761012914
   name "traffic cone(14)"
   physics Physics {
     density -1
@@ -2683,7 +3458,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -13.726455184271346 -43.786400021411204 -0.004076718672611251
-  rotation -0.00027316365636781593 0.9999998490525935 0.0004767351537162624 0.01369079276101314
+  rotation -0.0002731636563608009 0.9999998490525936 0.0004767351537162695 0.013690792761013138
   name "traffic cone(15)"
   physics Physics {
     density -1
@@ -2692,7 +3467,7 @@ TrafficCone {
 }
 TrafficCone {
   translation -1.3851451842713445 -44.867300021411204 -0.004076718672611251
-  rotation -0.00027316365636840644 0.9999998490525936 0.0004767351537234116 0.013690792761013138
+  rotation -0.00027316365636436405 0.9999998490525936 0.00047673515372338493 0.013690792761013138
   name "traffic cone(16)"
   physics Physics {
     density -1
@@ -2701,7 +3476,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 11.217444815728653 -44.8955000214112 -0.004076718672611251
-  rotation -0.00027316365636781593 0.9999998490525935 0.0004767351537162624 0.01369079276101314
+  rotation -0.0002731636563608009 0.9999998490525936 0.0004767351537162695 0.013690792761013138
   name "traffic cone(17)"
   physics Physics {
     density -1
@@ -2710,7 +3485,7 @@ TrafficCone {
 }
 TrafficCone {
   translation 22.153044815728677 -44.8152000214112 -0.004076718672611251
-  rotation -0.00027316365636808617 0.9999998490525936 0.00047673515371997685 0.01369079276101292
+  rotation -0.00027316365636341033 0.9999998490525936 0.00047673515371995007 0.013690792761012914
   name "traffic cone(18)"
   physics Physics {
     density -1
@@ -2759,7 +3534,7 @@ HighwayPole {
 }
 OilBarrel {
   translation -110.31684 -66.875162 0.5998773749999997
-  rotation 1.161134343734179e-19 -7.932434570326124e-20 1 3.14159
+  rotation 7.125158062124464e-20 -3.4979357568637647e-19 1 3.14159
   height 1.2
   radius 0.4
   physics Physics {
@@ -2771,7 +3546,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -107.04991 -33.037806 0.5998773749999997
-  rotation -4.1039641071023056e-19 -4.245167659765774e-19 1 3.14159
+  rotation 2.168911373715319e-19 -4.0247391316856774e-19 1 3.14159
   name "oil barrel(1)"
   height 1.2
   radius 0.4
@@ -2784,7 +3559,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -103.169 -54.770003 0.5998773749999997
-  rotation -4.1039641071023056e-19 -4.245167659765774e-19 1 3.14159
+  rotation 2.168911373715319e-19 -4.0247391316856774e-19 1 3.14159
   name "oil barrel(2)"
   height 1.2
   radius 0.4
@@ -2797,7 +3572,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -45 -105.104 0.5998773749999996
-  rotation 7.688982229557325e-19 1.7493130222823275e-19 -0.9999999999999999 1.5707953071795862
+  rotation 7.937596704393801e-19 1.393282233352177e-19 -0.9999999999999999 1.5707953071795862
   name "oil barrel(3)"
   height 1.2
   radius 0.4
@@ -2810,7 +3585,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -21.3988 -45.2699 0.5998773749999997
-  rotation 1.1364777506875523e-18 -1.7287777159882828e-19 -1 1.1781
+  rotation -1.0373179775043385e-18 7.786742388043873e-20 -1 1.1781
   name "oil barrel(4)"
   height 1.2
   radius 0.4
@@ -2823,7 +3598,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -22.9161 -45.3401 0.5998773749999997
-  rotation 5.191132684155128e-19 3.477958030405859e-21 1 1.9634953071795869
+  rotation -7.569124020867317e-20 2.3311483618787098e-20 1 1.9634953071795869
   name "oil barrel(5)"
   height 1.2
   radius 0.4
@@ -2836,7 +3611,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -22.1326 -45.7229 0.5998773749999997
-  rotation 0.29129133345031905 -0.6735012369048421 0.6793713586429609 3.1487355075542826e-19
+  rotation -0.0612271722431644 -0.14956388071594717 0.9868545378951712 2.2506553570845593e-18
   name "oil barrel(6)"
   height 1.2
   radius 0.4
@@ -2849,7 +3624,7 @@ OilBarrel {
 }
 OilBarrel {
   translation -48.6853 20.1904 0.5998773749999996
-  rotation 1.392552999983864e-19 5.7109680075987985e-19 1 3.01069
+  rotation 1.1878379250743762e-19 -1.5290172187151174e-19 1 3.01069
   name "oil barrel(7)"
   height 1.2
   radius 0.4
@@ -2981,211 +3756,19 @@ Crossroad {
 }
 </file>
 
-<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/CSEN934_Test_OL_Sensors.py">
-import math
+<file path=".gitignore">
+__pycache__/
+*.pyc
+/build
+/install
+/log
+/.idea
 
-from sensor_msgs.msg import PointCloud2, Image
-
-from geometry_msgs.msg import TransformStamped
-from tf2_ros import TransformBroadcaster
-
-from sensor_msgs.msg import PointCloud2
-import sensor_msgs_py.point_cloud2 as pc2
-from std_msgs.msg import Header
-
-import rclpy
-from ackermann_msgs.msg import AckermannDrive
-from nav_msgs.msg import Odometry
-from vehicle import Driver
-
-# Import from local helper files
-from Helping_Functions import euler_to_quaternion
-from Define_Sensors import init_sensors
-
-# 1. Initialize Webots Driver directly
-driver = Driver()
-timestep = int(driver.getBasicTimeStep())
-
-# 2. Initialize ROS 2 Node
-rclpy.init(args=None)
-node = rclpy.create_node('Tesla_Node')
-
-# 3. Enable Webots Sensors using Define_Sensors.py
-sensors = init_sensors(driver, timestep)
-gps = sensors['gps']
-imu = sensors['imu']
-gyro = sensors['gyro']
-
-# 4. Command Callback
-def cmd_callback(msg):
-    target_speed_kmh = msg.speed * 3.6
-    driver.setCruisingSpeed(target_speed_kmh)
-    driver.setSteeringAngle(msg.steering_angle)
-
-# 5. Subscribers and Publishers
-sub = node.create_subscription(
-    AckermannDrive, 
-    '/Car_Ackrm', 
-    cmd_callback, 
-    10
-)
-
-odom_pub = node.create_publisher(
-    Odometry, 
-    '/Car_Odom_GT', 
-    10
-)
-
-#Initialize the camera publisher
-camera = sensors['camera']
-cam_pub = node.create_publisher(Image, '/front_camera/image_raw', 10)
-last_cam_t = -1.0
-CAM_PERIOD = 0.1  # 10 Hz
-
-#publisher setup
-pc_pub = node.create_publisher(PointCloud2, '/lidar_points', 10)
-lidar = sensors['lidar']
-
-#Initialize the Broadcaster
-tf_broadcaster = TransformBroadcaster(node)
-LIDAR_PERIOD = 0.1
-last_lidar_t = -1.0
-
-# SLAM DEBUG VARIABLES
-last_lidar_debug_t = -1.0
-lidar_publish_count = 0
-last_tf_debug_t = -1.0
-
-
-# 6. The Main Webots Execution Loop
-while driver.step() != -1:
-    rclpy.spin_once(node, timeout_sec=0)
-    stamp = node.get_clock().now().to_msg()
-    
-    if gps and imu and gyro:
-        odom_msg = Odometry()
-        odom_msg.header.stamp = stamp
-        odom_msg.header.frame_id = 'odom'
-        odom_msg.child_frame_id = 'base_link'
-        
-        # Position
-        position = gps.getValues()
-        odom_msg.pose.pose.position.x = position[0]
-        odom_msg.pose.pose.position.y = position[1]
-        odom_msg.pose.pose.position.z = position[2]
-        
-        # Orientation using the imported helper function
-        roll, pitch, yaw = imu.getRollPitchYaw()
-        qx, qy, qz, qw = euler_to_quaternion(roll, pitch, yaw)
-        odom_msg.pose.pose.orientation.x = qx
-        odom_msg.pose.pose.orientation.y = qy
-        odom_msg.pose.pose.orientation.z = qz
-        odom_msg.pose.pose.orientation.w = qw
-        
-        # Linear Velocity
-        vx_w, vy_w, vz_w = gps.getSpeedVector()
-        cos_yaw, sin_yaw = math.cos(yaw), math.sin(yaw)
-        odom_msg.twist.twist.linear.x = cos_yaw * vx_w + sin_yaw * vy_w
-        odom_msg.twist.twist.linear.y = -sin_yaw * vx_w + cos_yaw * vy_w
-        odom_msg.twist.twist.linear.z = vz_w
-        
-        # Angular Velocity
-        angular_vel = gyro.getValues()
-        odom_msg.twist.twist.angular.x = angular_vel[0]
-        odom_msg.twist.twist.angular.y = angular_vel[1]
-        odom_msg.twist.twist.angular.z = angular_vel[2]
-        
-        # Broadcast the TF from odom to base_link
-        t = TransformStamped()
-        t.header.stamp = stamp
-        t.header.frame_id = 'odom'
-        t.child_frame_id = 'base_link'
-        
-        t.transform.translation.x = position[0]
-        t.transform.translation.y = position[1]
-        t.transform.translation.z = position[2]
-        
-        t.transform.rotation.x = qx
-        t.transform.rotation.y = qy
-        t.transform.rotation.z = qz
-        t.transform.rotation.w = qw
-        
-        # Publish ground-truth odometry
-        odom_pub.publish(odom_msg)
-        # Broadcast odom -> base_link
-        tf_broadcaster.sendTransform(t)
-        
-        # SLAM DEBUG: Check robot odometry and TF
-        if driver.getTime() - last_tf_debug_t >= 2.0:
-            node.get_logger().info(
-                f'[SLAM DEBUG] ODOM OK | '
-                f'X: {position[0]:.2f} | '
-                f'Y: {position[1]:.2f} | '
-                f'Z: {position[2]:.2f} | '
-                f'TF: odom -> base_link'
-            )
-            last_tf_debug_t = driver.getTime()
-    
-    if lidar and driver.getTime() - last_lidar_t >= LIDAR_PERIOD - 1e-6:
-        last_lidar_t = driver.getTime()
-        # Get LiDAR point cloud
-        pc_data = lidar.getPointCloud()
-        point_count = len(pc_data) if pc_data else 0
-
-        if point_count > 0:
-            points = [(p.x, p.y, p.z) for p in pc_data]
-
-            header = Header()
-            header.stamp = stamp
-            header.frame_id = 'lidar'
-
-            pc2_msg = pc2.create_cloud_xyz32(header, points)
-            pc_pub.publish(pc2_msg)
-
-            lidar_publish_count += 1
-
-        # Print debugging information every 2 seconds
-        if driver.getTime() - last_lidar_debug_t >= 2.0:
-            if point_count > 0:
-                node.get_logger().info(
-                    f'[SLAM DEBUG] LiDAR OK | '
-                    f'Points: {point_count} | '
-                    f'Published messages: {lidar_publish_count}'
-                )
-            else:
-                node.get_logger().warning(
-                    '[SLAM DEBUG] LiDAR returned EMPTY point cloud!'
-                )
-
-            last_lidar_debug_t = driver.getTime()
-            
-    if camera and driver.getTime() - last_cam_t >= CAM_PERIOD - 1e-6:
-        last_cam_t = driver.getTime()
-        img_data = camera.getImage()
-        
-        if img_data:
-            img_msg = Image()
-            img_msg.header.stamp = stamp
-            img_msg.header.frame_id = 'base_link' 
-            img_msg.height = camera.getHeight()
-            img_msg.width = camera.getWidth()
-            img_msg.encoding = 'bgra8'
-            img_msg.step = camera.getWidth() * 4
-            img_msg.data = img_data
-            cam_pub.publish(img_msg)
-</file>
-
-<file path="Webots_Worlds_Controller/Worlds/.city.wbproj">
-Webots Project File version R2025a
-perspectives: 000000ff00000000fd0000000300000000000001ca0000039ffc0200000001fb00000012005300630065006e0065005400720065006501000000000000039f0000000000000000000000010000023a000003b5fc0200000001fb0000001400540065007800740045006400690074006f00720100000016000003b50000003f00ffffff000000030000073a0000008dfc0100000002fb0000000e0043006f006e0073006f006c006501000001d0000005b00000000000000000fb0000001a0043006f006e0073006f006c00650041006c006c0041006c006c01000000000000073a0000006900ffffff000004fe000003b500000004000000040000000100000008fc00000000
-simulationViewPerspectives: 000000ff00000001000000020000016c000004a00100000002010000000101
-sceneTreePerspectives: 000000ff00000001000000030000001c000000c0000000fa0100000002010000000201
-maximizedDockId: -1
-centralWidgetVisible: 1
-orthographicViewHeight: 1
-textFiles: -1
-consoles: Console:All:All
-renderingDevicePerspectives: tesla_vehicle:front_camera;1;1;0;0
+# Local environment / launcher
+.venv/
+run_sim.sh
+frames_*.gv
+frames_*.pdf
 </file>
 
 <file path="package.xml">
@@ -3223,6 +3806,19 @@ renderingDevicePerspectives: tesla_vehicle:front_camera;1;1;0;0
     <build_type>ament_python</build_type>
   </export>
 </package>
+</file>
+
+<file path="Webots_Worlds_Controller/Worlds/.city.wbproj">
+Webots Project File version R2025a
+perspectives: 000000ff00000000fd0000000300000000000001ca0000039ffc0200000001fb00000012005300630065006e0065005400720065006501000000000000039f0000000000000000000000010000023a00000179fc0200000001fb0000001400540065007800740045006400690074006f00720000000017000001790000003f00ffffff000000030000073a000000defc0100000002fb0000000e0043006f006e0073006f006c006501000001d0000005b00000000000000000fb0000001a0043006f006e0073006f006c00650041006c006c0041006c006c01000000000000073a0000006900ffffff0000073a000002ec00000004000000040000000100000008fc00000000
+simulationViewPerspectives: 000000ff00000001000000020000016c000004a00100000002010000000101
+sceneTreePerspectives: 000000ff00000001000000030000001c000000c0000000fa0100000002010000000201
+maximizedDockId: -1
+centralWidgetVisible: 1
+orthographicViewHeight: 1
+textFiles: -1
+consoles: Console:All:All
+renderingDevicePerspectives: tesla_vehicle:front_camera;1;1;0;0
 </file>
 
 <file path="setup.py">
@@ -3269,6 +3865,11 @@ setup(
 </file>
 
 <file path="launch/teleop_launch.py">
+"""
+1) Added the use_sim_time parameter to the noise node and the ekf node and it was set to true.
+2) Modified the use_sim_time in gmapping node to be set to true
+"""
+
 import os
 import launch
 from ament_index_python.packages import get_package_share_directory
@@ -3298,14 +3899,16 @@ def generate_launch_description():
         package='csen934_project_pkg',
         executable='localization_add_noise',
         name='Localization_Add_Noise_Node',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': True}] # Using the sim time
     )
     
     ekf_node = Node(
         package='csen934_project_pkg',
         executable='localization_ekf_node',
         name='Localization_EKF_Node',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': True}] # Using the sim time
     )
     
     rqt_graph_node = Node(
@@ -3375,7 +3978,7 @@ def generate_launch_description():
     package='slam_gmapping', executable='slam_gmapping',
     name='slam_gmapping', output='screen',
     parameters=[{
-        'use_sim_time': False,
+        'use_sim_time': True,
         'base_frame': 'base_link',
         'odom_frame': 'odom',
         'map_frame': 'map',
@@ -3396,6 +3999,254 @@ def generate_launch_description():
         plots_node, pc_to_laserscan_node, lidar_tf_node,
         slam_toolbox_node, gmapping_node,
     ])
+</file>
+
+<file path="Webots_Worlds_Controller/controllers/CSEN934_Test_OL_Sensors/CSEN934_Test_OL_Sensors.py">
+import math
+
+# from sensor_msgs.msg import PointCloud2, Image  # Duplicate (imported below)
+
+from geometry_msgs.msg import TransformStamped
+from tf2_ros import TransformBroadcaster
+
+# from sensor_msgs.msg import PointCloud2  # Duplicate (imported below)
+import sensor_msgs_py.point_cloud2 as pc2
+from std_msgs.msg import Header
+
+import rclpy
+from ackermann_msgs.msg import AckermannDrive
+from nav_msgs.msg import Odometry
+from vehicle import Driver
+
+# Import from local helper files
+from Helping_Functions import euler_to_quaternion
+from Define_Sensors import init_sensors
+
+from builtin_interfaces.msg import Time # Alternative instead of using laptop's time stamp
+from rosgraph_msgs.msg import Clock
+
+from sensor_msgs.msg import PointCloud2, PointField, Image, Imu
+
+# 1. Initialize Webots Driver directly
+driver = Driver()
+timestep = int(driver.getBasicTimeStep())
+
+# 2. Initialize ROS 2 Node
+rclpy.init(args=None)
+node = rclpy.create_node('Tesla_Node')
+
+# 3. Enable Webots Sensors using Define_Sensors.py
+sensors = init_sensors(driver, timestep)
+gps = sensors['gps']
+imu = sensors['imu']
+gyro = sensors['gyro']
+accelerometer = sensors['accelerometer']
+imu_pub = node.create_publisher(Imu, '/imu/data', 100)
+
+LIO_SAM_FIELDS = [
+    PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+    PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+    PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
+    PointField(name='intensity', offset=12, datatype=PointField.FLOAT32, count=1),
+    PointField(name='ring', offset=16, datatype=PointField.UINT16, count=1),
+    PointField(name='time', offset=20, datatype=PointField.FLOAT32, count=1),
+]
+
+# 4. Command Callback
+def cmd_callback(msg):
+    target_speed_kmh = msg.speed * 3.6
+    driver.setCruisingSpeed(target_speed_kmh)
+    driver.setSteeringAngle(msg.steering_angle)
+
+# 5. Subscribers and Publishers
+sub = node.create_subscription(
+    AckermannDrive, 
+    '/Car_Ackrm', 
+    cmd_callback, 
+    10
+)
+
+odom_pub = node.create_publisher(
+    Odometry, 
+    '/Car_Odom_GT', 
+    10
+)
+
+clock_pub = node.create_publisher(Clock, '/clock', 10)
+
+#Initialize the camera publisher
+camera = sensors['camera']
+cam_pub = node.create_publisher(Image, '/front_camera/image_raw', 10)
+last_cam_t = -1.0
+CAM_PERIOD = 0.1  # 10 Hz
+
+#publisher setup
+pc_pub = node.create_publisher(PointCloud2, '/lidar_points', 10)
+lidar = sensors['lidar']
+
+#Initialize the Broadcaster
+tf_broadcaster = TransformBroadcaster(node)
+LIDAR_PERIOD = 0.1
+last_lidar_t = -1.0
+
+# SLAM DEBUG VARIABLES
+last_lidar_debug_t = -1.0
+lidar_publish_count = 0
+last_tf_debug_t = -1.0
+
+
+# 6. The Main Webots Execution Loop
+while driver.step() != -1:
+    rclpy.spin_once(node, timeout_sec=0)
+    # stamp = node.get_clock().now().to_msg()
+    
+    # FIX: Extract internal simulation time instead of wall-clock time
+    sim_time = driver.getTime()
+    stamp = Time()
+    stamp.sec = int(sim_time)
+    stamp.nanosec = int((sim_time - int(sim_time)) * 1e9)
+    
+    # NEW: Publish this time to the /clock topic for SLAM and EKF
+    clock_msg = Clock()
+    clock_msg.clock = stamp
+    clock_pub.publish(clock_msg)
+    
+    if gps and imu and gyro and accelerometer:
+        odom_msg = Odometry()
+        odom_msg.header.stamp = stamp
+        odom_msg.header.frame_id = 'odom'
+        odom_msg.child_frame_id = 'base_link'
+        
+        imu_msg = Imu()
+        imu_msg.header.stamp = stamp
+        imu_msg.header.frame_id = 'base_link'
+        
+        # Position
+        position = gps.getValues()
+        odom_msg.pose.pose.position.x = position[0]
+        odom_msg.pose.pose.position.y = position[1]
+        odom_msg.pose.pose.position.z = position[2]
+        
+        # Orientation using the imported helper function
+        roll, pitch, yaw = imu.getRollPitchYaw()
+        qx, qy, qz, qw = euler_to_quaternion(roll, pitch, yaw)
+        odom_msg.pose.pose.orientation.x = qx
+        odom_msg.pose.pose.orientation.y = qy
+        odom_msg.pose.pose.orientation.z = qz
+        odom_msg.pose.pose.orientation.w = qw
+        
+        imu_msg.orientation.x = qx
+        imu_msg.orientation.y = qy
+        imu_msg.orientation.z = qz
+        imu_msg.orientation.w = qw
+        
+        # Linear Velocity
+        vx_w, vy_w, vz_w = gps.getSpeedVector()
+        cos_yaw, sin_yaw = math.cos(yaw), math.sin(yaw)
+        odom_msg.twist.twist.linear.x = cos_yaw * vx_w + sin_yaw * vy_w
+        odom_msg.twist.twist.linear.y = -sin_yaw * vx_w + cos_yaw * vy_w
+        odom_msg.twist.twist.linear.z = vz_w
+        
+        # Angular Velocity
+        angular_vel = gyro.getValues()
+        odom_msg.twist.twist.angular.x = angular_vel[0]
+        odom_msg.twist.twist.angular.y = angular_vel[1]
+        odom_msg.twist.twist.angular.z = angular_vel[2]
+        
+        imu_msg.angular_velocity.x = angular_vel[0]
+        imu_msg.angular_velocity.y = angular_vel[1]
+        imu_msg.angular_velocity.z = angular_vel[2]
+        
+        # Accelerometer
+        linear_acceleration = accelerometer.getValues()
+        imu_msg.linear_acceleration.x = linear_acceleration[0]
+        imu_msg.linear_acceleration.y = linear_acceleration[1]
+        imu_msg.linear_acceleration.z = linear_acceleration[2]
+        
+        imu_pub.publish(imu_msg)
+        
+        # Broadcast the TF from odom to base_link
+        t = TransformStamped()
+        t.header.stamp = stamp
+        t.header.frame_id = 'odom'
+        t.child_frame_id = 'base_link'
+        
+        t.transform.translation.x = position[0]
+        t.transform.translation.y = position[1]
+        t.transform.translation.z = position[2]
+        
+        t.transform.rotation.x = qx
+        t.transform.rotation.y = qy
+        t.transform.rotation.z = qz
+        t.transform.rotation.w = qw
+        
+        # Publish ground-truth odometry
+        odom_pub.publish(odom_msg)
+        # Broadcast odom -> base_link
+        #tf_broadcaster.sendTransform(t) #commented this
+        
+        # SLAM DEBUG: Check robot odometry and TF
+        if driver.getTime() - last_tf_debug_t >= 2.0:
+            node.get_logger().info(
+                f'[SLAM DEBUG] ODOM OK | '
+                f'X: {position[0]:.2f} | '
+                f'Y: {position[1]:.2f} | '
+                f'Z: {position[2]:.2f} | '
+                f'TF: odom -> base_link'
+            )
+            last_tf_debug_t = driver.getTime()
+    
+    if lidar and driver.getTime() - last_lidar_t >= LIDAR_PERIOD - 1e-6:
+        last_lidar_t = driver.getTime()
+        # Get LiDAR point cloud
+        pc_data = lidar.getPointCloud()
+        point_count = len(pc_data) if pc_data else 0
+
+        if point_count > 0:
+          h_res = lidar.getHorizontalResolution()
+          points = [
+              (p.x, p.y, p.z, 0.0, getattr(p, 'layer', i // h_res), 0.0)
+              for i, p in enumerate(pc_data)
+              if math.isfinite(p.x) and math.isfinite(p.y) and math.isfinite(p.z)
+          ]
+          
+          header = Header()
+          header.stamp = stamp
+          header.frame_id = 'lidar'
+
+          pc2_msg = pc2.create_cloud(header, LIO_SAM_FIELDS, points)
+          pc_pub.publish(pc2_msg)
+          lidar_publish_count += 1
+
+        # Print debugging information every 2 seconds
+        if driver.getTime() - last_lidar_debug_t >= 2.0:
+            if point_count > 0:
+                node.get_logger().info(
+                    f'[SLAM DEBUG] LiDAR OK | '
+                    f'Points: {point_count} | '
+                    f'Published messages: {lidar_publish_count}'
+                )
+            else:
+                node.get_logger().warning(
+                    '[SLAM DEBUG] LiDAR returned EMPTY point cloud!'
+                )
+
+            last_lidar_debug_t = driver.getTime()
+            
+    if camera and driver.getTime() - last_cam_t >= CAM_PERIOD - 1e-6:
+        last_cam_t = driver.getTime()
+        img_data = camera.getImage()
+        
+        if img_data:
+            img_msg = Image()
+            img_msg.header.stamp = stamp
+            img_msg.header.frame_id = 'base_link' 
+            img_msg.height = camera.getHeight()
+            img_msg.width = camera.getWidth()
+            img_msg.encoding = 'bgra8'
+            img_msg.step = camera.getWidth() * 4
+            img_msg.data = img_data
+            cam_pub.publish(img_msg)
 </file>
 
 </files>

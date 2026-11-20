@@ -23,12 +23,17 @@ def init_sensors(driver, timestep):
     if lidar:
         lidar.enable(timestep * 10)  # Throttled to ~10Hz
         lidar.enablePointCloud()
+        
+    accelerometer = driver.getDevice('accelerometer')
+    if accelerometer:
+        accelerometer.enable(timestep)
 
     return {
         'camera': camera,
         'gps': gps,
         'imu': imu,
         'gyro': gyro,
+        'accelerometer': accelerometer,
         'lidar': lidar
     }
 
